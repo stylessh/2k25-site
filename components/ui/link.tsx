@@ -21,8 +21,8 @@ export function Link({
         href={href}
         className={cn(
           "relative text-foreground-primary duration-200 ease-in-out",
-          "after:content-[''] after:transform after:absolute after:-bottom-1 after:inset-x-0 after:origin-center after:w-full after:h-[2px] after:bg-[var(--current-color)] after:rounded-sm after:transition-[width,height,background-color,bottom,scale] duration-200 ease-in-out",
-          "hover:after:h-[2.5px] hover:after:-bottom-1.5 hover:after:scale-x-90",
+          "after:content-[''] after:transform after:absolute after:-bottom-1 after:inset-x-0 after:origin-center after:w-full after:h-px after:bg-[var(--current-color)] after:rounded-xs after:transition-[width,height,background-color,bottom,scale] duration-200 ease-in-out",
+          "hover:after:scale-y-150 hover:after:-bottom-1.5 hover:after:scale-x-90",
           className
         )}
         target={target}

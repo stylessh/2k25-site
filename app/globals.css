@@ -35,7 +35,7 @@
     --current-color: var(--color-border);
 
     &:hover {
-      --current-color: var(--color-foreground-secondary);
+      --current-color: var(--color-foreground-primary);
     }
   }
 }
