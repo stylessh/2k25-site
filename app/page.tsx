@@ -5,7 +5,7 @@ import { Projects } from "@/components/sections/projects";
 
 export default function Home() {
   return (
-    <main className="bg-surface-page h-screen">
+    <main className="min-h-screen">
       <Container>
         <Hero />
         <Projects />

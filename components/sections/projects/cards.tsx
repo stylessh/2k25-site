@@ -80,7 +80,7 @@ export function InteractionsCard() {
 
   return (
     <Card
-      className="relative col-span-2 items-center flex-row gap-x-8 pb-3"
+      className="relative col-span-full md:items-center md:flex-row gap-8 pb-3"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -110,7 +110,7 @@ export function InteractionsCard() {
         </div>
       </div>
 
-      <div className="flex-grow w-full flex flex-col items-end gap-y-2 text-right">
+      <div className="flex-grow w-full flex flex-col md:items-end gap-y-2 md:text-right">
         <Text className="text-foreground-primary" as="h2">
           Interactions
         </Text>

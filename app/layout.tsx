@@ -43,7 +43,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} antialiased bg-background`}>
+      <body className={`${outfit.variable} antialiased bg-surface-page`}>
         {children}
       </body>
     </html>
