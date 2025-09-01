@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next"
+
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
@@ -46,6 +48,8 @@ export default function RootLayout({
       <body className={`${outfit.variable} antialiased bg-surface-page`}>
         {children}
       </body>
+      
+      <Analytics />
     </html>
   );
 }
