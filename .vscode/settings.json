@@ -1,0 +1,6 @@
+{
+  "biome.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit"
+  }
+}

@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* sRGB hex colors */
+    --accent: #ffb162;
+    --background: #fbfbfb;
+    --border: #f1f1f1;
+    --foreground-primary: #353535;
+    --foreground-secondary: #7b7b7b;
+    --surface-page: #ffffff;
+
+    /* P3 colors */
+    @supports (color: oklch(0 0 0)) {
+      --accent: oklch(0.82 0.132 64.5);
+      --background: oklch(0.988 0 0);
+      --border: oklch(0.958 0 0);
+
+      --foreground-primary: oklch(0.329 0 0);
+      --foreground-secondary: oklch(0.583 0 0);
+
+      --surface-page: oklch(1 0 0);
+    }
+  }
+
+  * {
+    @apply border-border;
+
+    ::selection {
+      @apply bg-foreground-primary text-surface-page;
+    }
+  }
+
+  .link {
+    --current-color: var(--color-border);
+
+    &:hover {
+      --current-color: var(--color-foreground-secondary);
+    }
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground-primary: var(--foreground-primary);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-surface-page: var(--surface-page);
+
+  --font-sans: var(--font-outfit-sans);
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
