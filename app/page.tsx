@@ -5,12 +5,12 @@ import { Projects } from "@/components/sections/projects";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <div className="bg-background text-foreground min-h-screen selection:bg-accent selection:text-accent-foreground">
       <Container>
         <Hero />
         <Projects />
         <Links />
       </Container>
-    </main>
+    </div>
   );
 }
