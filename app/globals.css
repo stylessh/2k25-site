@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 @layer base {
+  body {
+    @apply text-[14px];
+  }
+
   :root {
     color-scheme: light;
 
@@ -41,4 +45,18 @@
   --color-accent-foreground: var(--accent-foreground);
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-normal {
+    @apply text-[14px] leading-relaxed;
+  }
+
+  .text-highlight {
+    @apply text-[14px] font-medium tracking-tight text-foreground;
+  }
+
+  .text-label {
+    @apply text-[12px] font-normal uppercase tracking-[0.1em] text-muted-foreground;
+  }
 }

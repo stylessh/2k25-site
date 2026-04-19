@@ -1,8 +1,10 @@
 import { Analytics } from "@vercel/analytics/next";
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { ProjectDeckHoverProvider } from "@/components/project-deck-hover-context";
+import { ProjectDeckDialProvider } from "@/components/project-deck-dial";
 import { ThemeScript } from "@/components/theme-script";
+import "dialkit/styles.css";
 import "./globals.css";
 
 const inter = Inter({
@@ -51,7 +53,10 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
         <ThemeScript />
-        {children}
+        <ProjectDeckDialProvider>
+          <ProjectDeckHoverProvider>{children}</ProjectDeckHoverProvider>
+        </ProjectDeckDialProvider>
+      
         <Analytics />
       </body>
     </html>

@@ -77,17 +77,15 @@ const connectLinks = [
 ] as const;
 
 const rowClass =
-  "inline-flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground transition-colors group w-fit";
+  "inline-flex items-center gap-3 text-normal text-muted-foreground hover:text-foreground transition-colors group w-fit";
 
 const labelClass =
   "underline underline-offset-4 decoration-border/60 hover:decoration-foreground transition-all";
 
 export function Links() {
   return (
-    <section className="py-12 first:pt-0">
-      <h2 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground mb-10">
-        Connect
-      </h2>
+    <section className="py-8 first:pt-0">
+      <h2 className="text-label mb-6">Connect</h2>
 
       <div className="flex flex-col gap-3">
         {connectLinks.map(({ label, href, Icon }) => (
