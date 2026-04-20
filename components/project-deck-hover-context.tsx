@@ -2,17 +2,13 @@
 
 import {
   createContext,
-  useContext,
-  useMemo,
-  useState,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
+  useContext,
+  useMemo,
+  useState,
 } from "react";
-
-/** Same timing as `ProjectTitleLink` overlay: `transition={{ duration: 0.28, ease: "easeOut" }}`. */
-export const PROJECT_PEER_BLUR_TRANSITION =
-  "transition-[filter] duration-[280ms] ease-out";
 
 type ProjectDeckHoverContextValue = {
   activeProjectTitle: string | null;
@@ -22,7 +18,11 @@ type ProjectDeckHoverContextValue = {
 const ProjectDeckHoverContext =
   createContext<ProjectDeckHoverContextValue | null>(null);
 
-export function ProjectDeckHoverProvider({ children }: { children: ReactNode }) {
+export function ProjectDeckHoverProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [activeProjectTitle, setActiveProjectTitle] = useState<string | null>(
     null,
   );

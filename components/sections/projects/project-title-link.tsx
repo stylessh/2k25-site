@@ -3,15 +3,16 @@
 import { motion } from "motion/react";
 import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
-import {
-  PROJECT_PEER_BLUR_TRANSITION,
-  useProjectDeckHover,
-} from "@/components/project-deck-hover-context";
 import { useProjectDeckDial } from "@/components/project-deck-dial";
-import { DESKTOP_DECK_MQ } from "./project-deck-media";
+import { useProjectDeckHover } from "@/components/project-deck-hover-context";
+import { cn } from "@/lib/utils";
 import { PROJECT_DECK } from "./deck-config";
 import { DeckStack, deckLinkWrapperVariants } from "./deck-stack";
+import { DESKTOP_DECK_MQ } from "./project-deck-media";
+
+const VEIL_TIMING_CLASS = "duration-[280ms] ease-out";
+/** Slightly longer than the veil — small text reads as faster at equal ms. */
+const PEER_BLUR_TIMING_CLASS = "duration-[360ms] ease-out";
 
 const titleLinkClass =
   "text-foreground underline underline-offset-4 decoration-border/60 hover:decoration-foreground transition-all";
@@ -75,9 +76,7 @@ export function ProjectTitleLink({
   }, [hovered, title, setActiveProjectTitle, desktopDeck]);
 
   const peerBlur =
-    desktopDeck &&
-    activeProjectTitle != null &&
-    activeProjectTitle !== title;
+    desktopDeck && activeProjectTitle != null && activeProjectTitle !== title;
 
   const simpleLink = (
     <NextLink
@@ -103,27 +102,31 @@ export function ProjectTitleLink({
       onHoverStart={() => setHovered(true)}
       onHoverEnd={() => setHovered(false)}
     >
-      <motion.div
-        className="pointer-events-none fixed inset-0 z-[90] bg-background/5 backdrop-blur-sm dark:bg-background/10"
+      <div
+        className={cn(
+          "pointer-events-none fixed inset-0 z-[90] bg-background/5 backdrop-blur-sm transition-opacity dark:bg-background/10",
+          VEIL_TIMING_CLASS,
+          hovered ? "opacity-100" : "opacity-0",
+        )}
         aria-hidden
-        initial={false}
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.28, ease: "easeOut" }}
       />
 
-      <NextLink
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+      <span
         className={cn(
-          titleLinkClass,
-          "relative z-[100]",
-          PROJECT_PEER_BLUR_TRANSITION,
-          peerBlur ? "blur-sm" : "blur-none",
+          "relative z-[100] inline transition-[filter]",
+          PEER_BLUR_TIMING_CLASS,
+          peerBlur ? "blur-xs" : "blur-none",
         )}
       >
-        {title}
-      </NextLink>
+        <NextLink
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={titleLinkClass}
+        >
+          {title}
+        </NextLink>
+      </span>
 
       <DeckStack
         cards={cards}
