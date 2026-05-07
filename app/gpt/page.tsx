@@ -74,8 +74,7 @@ export default function GptVariantPage() {
               </h1>
               <p className="max-w-md text-muted-foreground text-xl leading-relaxed tracking-[-0.03em]">
                 {content.hero.role} crafting sharp product surfaces at{" "}
-                <span className="text-foreground">{content.hero.orgName}</span>
-                .
+                <span className="text-foreground">{content.hero.orgName}</span>.
               </p>
             </div>
 
