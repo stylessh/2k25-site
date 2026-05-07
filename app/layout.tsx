@@ -1,8 +1,8 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { ProjectDeckHoverProvider } from "@/components/project-deck-hover-context";
 import { ProjectDeckDialProvider } from "@/components/project-deck-dial";
+import { ProjectDeckHoverProvider } from "@/components/project-deck-hover-context";
 import { ThemeScript } from "@/components/theme-script";
 import "dialkit/styles.css";
 import "./globals.css";
@@ -17,6 +17,7 @@ const description =
   "Designing and Engineering fresh, functional, accessible and great-looking user interfaces and experiences.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://stylessh.dev"),
   title: "Alan Daniel — Design Engineer",
   description,
 
@@ -50,13 +51,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} min-h-dvh overflow-x-hidden font-sans antialiased bg-background text-foreground`}
       >
         <ThemeScript />
         <ProjectDeckDialProvider>
           <ProjectDeckHoverProvider>{children}</ProjectDeckHoverProvider>
         </ProjectDeckDialProvider>
-      
+
         <Analytics />
       </body>
     </html>
