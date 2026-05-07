@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import type { Metadata } from "next";
+import Image from "next/image";
 import NextLink from "next/link";
 import { ModelVariantToolbar } from "@/components/model-variant-toolbar";
 import { SupabaseMark } from "@/components/supabase-mark";
@@ -173,10 +174,12 @@ export default function GptVariantPage() {
                         key={image}
                         className="relative block aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/40"
                       >
-                        <img
+                        <Image
                           src={image}
                           alt=""
-                          className="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                          fill
+                          sizes="(min-width: 640px) 18vw, 30vw"
+                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
                           draggable={false}
                         />
                         <span className="absolute left-2 top-2 rounded-full border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
