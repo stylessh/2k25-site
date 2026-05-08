@@ -7,6 +7,9 @@ import { ThemeScript } from "@/components/theme-script";
 import "dialkit/styles.css";
 import "./globals.css";
 
+/** Intentional type error to fail CI/build — delete this line when workflow testing is done. */
+const _intentionalBuildFailure: string = 1;
+
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
