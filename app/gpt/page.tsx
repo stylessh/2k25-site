@@ -9,7 +9,7 @@ import { CANONICAL_PORTFOLIO } from "@/lib/portfolio-content";
 const canonical = "https://stylessh.dev";
 
 export const metadata: Metadata = {
-  title: "Alan Daniel — GPT variant",
+  title: "Alan Daniel - GPT variant",
   description: "Alternate portfolio build (GPT). Canonical site: stylessh.dev.",
   robots: { index: false, follow: true },
   alternates: { canonical },
@@ -30,17 +30,18 @@ function getLatestCommitDate(): Date | null {
   }
 }
 
-const content = CANONICAL_PORTFOLIO;
-const labelClass =
-  "font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground";
-const ruleClass = "border-border border-t";
-
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
-  month: "short",
   day: "2-digit",
+  month: "short",
   year: "numeric",
   timeZone: "UTC",
 });
+
+const content = CANONICAL_PORTFOLIO;
+const labelClass =
+  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+const microClass = "font-mono text-[11px] text-muted-foreground";
+const bodyClass = "text-[13px] leading-relaxed";
 
 const connectLinks = [
   { label: "GitHub", href: "https://github.com/stylessh" },
@@ -56,57 +57,82 @@ function hostName(href: string) {
   }
 }
 
+function numberLabel(value: number) {
+  return value.toString().padStart(2, "0");
+}
+
+function ArrowUpRight() {
+  return (
+    <svg
+      aria-hidden
+      className="size-3"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.8}
+      viewBox="0 0 24 24"
+    >
+      <path d="M7 17 17 7" />
+      <path d="M8 7h9v9" />
+    </svg>
+  );
+}
+
 export default function GptVariantPage() {
+  const { hero, projects } = content;
   const latestModified = getLatestCommitDate();
   const latestModifiedText = latestModified
     ? dateFormatter.format(latestModified)
     : "Unavailable";
 
   return (
-    <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-4xl px-6 py-12 pb-28 sm:px-10 sm:py-16">
-        <nav
-          className="flex items-center justify-between gap-4 pb-5"
-          aria-label="Portfolio variant"
-        >
-          <NextLink
-            href="/"
-            className="text-muted-foreground text-normal underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+    <main className="min-h-dvh bg-background pb-28 text-foreground selection:bg-accent selection:text-accent-foreground">
+      <div className="mx-auto grid w-full max-w-5xl gap-12 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:gap-16">
+        <aside className="space-y-10 lg:sticky lg:top-10 lg:h-fit">
+          <nav
+            aria-label="Portfolio variant"
+            className="flex items-center justify-between gap-4"
           >
-            Original
-          </NextLink>
-          <span className={labelClass}>GPT interpretation</span>
-        </nav>
+            <span className={labelClass}>GPT portfolio</span>
+            <NextLink
+              href="/"
+              className="text-[12px] text-muted-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+            >
+              Original
+            </NextLink>
+          </nav>
 
-        <header className={`${ruleClass} grid gap-10 py-10 sm:grid-cols-12`}>
-          <div className="space-y-6 sm:col-span-7">
+          <header className="space-y-6">
             <div className="space-y-2">
-              <p className={labelClass}>{content.hero.role}</p>
-              <h1 className="font-medium text-[28px] leading-none tracking-[-0.04em] sm:text-[36px]">
-                {content.hero.name}
+              <p className={labelClass}>{hero.role}</p>
+              <h1 className="font-medium text-[30px] leading-none tracking-[-0.045em] sm:text-[38px]">
+                {hero.name}
               </h1>
             </div>
 
-            <p className="max-w-md text-[15px] text-foreground leading-relaxed">
-              {content.hero.intro}
+            <p className={`${bodyClass} max-w-sm text-foreground`}>
+              {hero.intro}
             </p>
 
-            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-normal">
-              <span>{content.hero.employmentPrefix}</span>
-              {content.hero.showSupabaseMark ? (
+            <p
+              className={`${bodyClass} flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground`}
+            >
+              <span>{hero.employmentPrefix}</span>
+              {hero.showSupabaseMark ? (
                 <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
                   <SupabaseMark className="size-full" />
                 </span>
               ) : null}
               <strong className="font-medium text-foreground">
-                {content.hero.orgName}
+                {hero.orgName}
               </strong>
             </p>
-          </div>
+          </header>
 
-          <dl className="grid content-start grid-cols-[auto_1fr] gap-x-6 gap-y-3 sm:col-span-5 sm:border-border sm:border-l sm:pl-8">
+          <dl className="grid grid-cols-[9rem_1fr] gap-x-4 gap-y-3 border-y border-border py-5">
             <dt className={labelClass}>Latest Modified</dt>
-            <dd className="text-normal">
+            <dd className="text-[13px] tabular-nums">
               {latestModified ? (
                 <time dateTime={latestModified.toISOString()}>
                   {latestModifiedText}
@@ -115,90 +141,17 @@ export default function GptVariantPage() {
                 latestModifiedText
               )}
             </dd>
+
             <dt className={labelClass}>Projects</dt>
-            <dd className="text-normal tabular-nums">
-              {content.projects.length.toString().padStart(2, "0")}
+            <dd className="text-[13px] tabular-nums">
+              {numberLabel(projects.length)}
             </dd>
+
             <dt className={labelClass}>Theme</dt>
-            <dd className="text-normal">System</dd>
+            <dd className="text-[13px]">System</dd>
           </dl>
-        </header>
 
-        <section className={ruleClass} aria-labelledby="gpt-work">
-          <div className="flex items-end justify-between gap-4 py-5">
-            <h2 id="gpt-work" className={labelClass}>
-              Selected work
-            </h2>
-            <span className="text-muted-foreground text-[12px]">
-              Entries from shared data
-            </span>
-          </div>
-
-          <ol className="divide-y divide-border border-border border-t">
-            {content.projects.map((project, index) => (
-              <li key={project.title}>
-                <article className="grid gap-5 py-8 sm:grid-cols-12 sm:gap-8">
-                  <div className="space-y-3 sm:col-span-5">
-                    <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                      {(index + 1).toString().padStart(2, "0")}
-                    </p>
-                    <div className="space-y-2">
-                      <h3 className="font-medium text-[20px] tracking-[-0.025em]">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                      <p className="max-w-md text-muted-foreground text-normal">
-                        {project.description}
-                      </p>
-                    </div>
-                    <p className="font-mono text-[11px] text-muted-foreground">
-                      {hostName(project.href)}
-                    </p>
-                  </div>
-
-                  <NextLink
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Open ${project.title}`}
-                    className="group grid grid-cols-3 gap-2 sm:col-span-7"
-                  >
-                    {project.deckImages.map((image, imageIndex) => (
-                      <span
-                        key={image}
-                        className="relative block aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/40"
-                      >
-                        <Image
-                          src={image}
-                          alt=""
-                          fill
-                          sizes="(min-width: 640px) 18vw, 30vw"
-                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                          draggable={false}
-                        />
-                        <span className="absolute left-2 top-2 rounded-full border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
-                          {imageIndex + 1}
-                        </span>
-                      </span>
-                    ))}
-                  </NextLink>
-                </article>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        <section
-          className={`${ruleClass} mt-10 py-6`}
-          aria-labelledby="gpt-connect"
-        >
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <section aria-labelledby="gpt-connect" className="space-y-4">
             <h2 id="gpt-connect" className={labelClass}>
               Connect
             </h2>
@@ -213,14 +166,95 @@ export default function GptVariantPage() {
                         ? "noopener noreferrer"
                         : undefined
                     }
-                    className="text-muted-foreground text-normal underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+                    className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
                   >
                     {link.label}
+                    {link.href.startsWith("http") ? <ArrowUpRight /> : null}
                   </NextLink>
                 </li>
               ))}
             </ul>
+          </section>
+        </aside>
+
+        <section aria-labelledby="gpt-work" className="space-y-4">
+          <div className="flex items-end justify-between gap-4 border-b border-border pb-4">
+            <h2 id="gpt-work" className={labelClass}>
+              Selected work
+            </h2>
+            <span className={microClass}>shared data</span>
           </div>
+
+          <ol className="space-y-3">
+            {projects.map((project, index) => (
+              <li key={project.title}>
+                <article className="group rounded-xl border border-border bg-background p-3 transition-colors hover:border-muted-foreground/35">
+                  <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_13rem]">
+                    <div className="flex min-h-44 flex-col justify-between gap-8 p-2">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <span className={`${microClass} tabular-nums`}>
+                            {numberLabel(index + 1)}
+                          </span>
+                          <span className={`${microClass} truncate`}>
+                            {hostName(project.href)}
+                          </span>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h3 className="font-medium text-[18px] leading-tight tracking-[-0.025em]">
+                            <NextLink
+                              href={project.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                            >
+                              {project.title}
+                              <ArrowUpRight />
+                            </NextLink>
+                          </h3>
+                          <p
+                            className={`${bodyClass} max-w-md text-muted-foreground`}
+                          >
+                            {project.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className={labelClass}>Portfolio entry</span>
+                    </div>
+
+                    <NextLink
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open ${project.title}`}
+                      className="grid grid-cols-3 gap-1.5 sm:grid-cols-1"
+                    >
+                      {project.deckImages.map((image, imageIndex) => (
+                        <span
+                          key={image}
+                          className="relative block aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/40"
+                        >
+                          <Image
+                            src={image}
+                            alt=""
+                            fill
+                            sizes="(min-width: 1024px) 13rem, (min-width: 640px) 28vw, 30vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                            draggable={false}
+                          />
+                          <span className="absolute left-2 top-2 rounded-full border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
+                            {numberLabel(imageIndex + 1)}
+                          </span>
+                        </span>
+                      ))}
+                    </NextLink>
+                  </div>
+                </article>
+              </li>
+            ))}
+          </ol>
         </section>
       </div>
 
