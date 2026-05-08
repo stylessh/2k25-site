@@ -67,6 +67,7 @@ function ArrowUpRight() {
       aria-hidden
       className="size-3"
       fill="none"
+      role="presentation"
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
