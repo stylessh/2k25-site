@@ -32,14 +32,19 @@ function getLatestCommitDate(): Date | null {
 
 const content = CANONICAL_PORTFOLIO;
 const labelClass =
-  "font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground";
-const ruleClass = "border-border border-t";
+  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+const linkClass =
+  "underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "short",
   day: "2-digit",
   year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
   timeZone: "UTC",
+  timeZoneName: "short",
 });
 
 const connectLinks = [
@@ -56,110 +61,122 @@ function hostName(href: string) {
   }
 }
 
+function pad(value: number) {
+  return value.toString().padStart(2, "0");
+}
+
 export default function GptVariantPage() {
   const latestModified = getLatestCommitDate();
   const latestModifiedText = latestModified
     ? dateFormatter.format(latestModified)
     : "Unavailable";
+  const { hero, projects } = content;
 
   return (
-    <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-4xl px-6 py-12 pb-28 sm:px-10 sm:py-16">
-        <nav
-          className="flex items-center justify-between gap-4 pb-5"
-          aria-label="Portfolio variant"
-        >
+    <main className="min-h-dvh bg-background pb-28 text-foreground selection:bg-accent selection:text-accent-foreground">
+      <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:px-8 sm:py-16">
+        <nav className="mb-12 flex items-center justify-between gap-4">
           <NextLink
             href="/"
-            className="text-muted-foreground text-normal underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
+            className={`${linkClass} text-[13px] text-muted-foreground`}
           >
             Original
           </NextLink>
-          <span className={labelClass}>GPT interpretation</span>
+          <span className={labelClass}>GPT portfolio</span>
         </nav>
 
-        <header className={`${ruleClass} grid gap-10 py-10 sm:grid-cols-12`}>
-          <div className="space-y-6 sm:col-span-7">
-            <div className="space-y-2">
-              <p className={labelClass}>{content.hero.role}</p>
-              <h1 className="font-medium text-[28px] leading-none tracking-[-0.04em] sm:text-[36px]">
-                {content.hero.name}
+        <header className="grid gap-8 border-border border-t pt-6 sm:grid-cols-[1fr_15rem]">
+          <div className="space-y-6">
+            <div className="space-y-1.5">
+              <p className={labelClass}>{hero.role}</p>
+              <h1 className="font-medium text-[24px] leading-tight tracking-[-0.03em] sm:text-[30px]">
+                {hero.name}
               </h1>
             </div>
 
-            <p className="max-w-md text-[15px] text-foreground leading-relaxed">
-              {content.hero.intro}
-            </p>
-
-            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-muted-foreground text-normal">
-              <span>{content.hero.employmentPrefix}</span>
-              {content.hero.showSupabaseMark ? (
-                <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
-                  <SupabaseMark className="size-full" />
-                </span>
-              ) : null}
-              <strong className="font-medium text-foreground">
-                {content.hero.orgName}
-              </strong>
-            </p>
+            <div className="max-w-md space-y-4">
+              <p className="text-[14px] leading-relaxed">{hero.intro}</p>
+              <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
+                <span>{hero.employmentPrefix}</span>
+                {hero.showSupabaseMark ? (
+                  <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
+                    <SupabaseMark className="size-full" />
+                  </span>
+                ) : null}
+                <strong className="font-medium text-foreground">
+                  {hero.orgName}
+                </strong>
+              </p>
+            </div>
           </div>
 
-          <dl className="grid content-start grid-cols-[auto_1fr] gap-x-6 gap-y-3 sm:col-span-5 sm:border-border sm:border-l sm:pl-8">
-            <dt className={labelClass}>Latest Modified</dt>
-            <dd className="text-normal">
-              {latestModified ? (
-                <time dateTime={latestModified.toISOString()}>
-                  {latestModifiedText}
-                </time>
-              ) : (
-                latestModifiedText
-              )}
-            </dd>
-            <dt className={labelClass}>Projects</dt>
-            <dd className="text-normal tabular-nums">
-              {content.projects.length.toString().padStart(2, "0")}
-            </dd>
-            <dt className={labelClass}>Theme</dt>
-            <dd className="text-normal">System</dd>
+          <dl className="grid content-start gap-3 border-border border-t pt-5 text-[13px] sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0">
+            <div className="grid gap-1">
+              <dt className={labelClass}>Latest Modified</dt>
+              <dd className="tabular-nums">
+                {latestModified ? (
+                  <time dateTime={latestModified.toISOString()}>
+                    {latestModifiedText}
+                  </time>
+                ) : (
+                  latestModifiedText
+                )}
+              </dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className={labelClass}>Entries</dt>
+              <dd className="tabular-nums">{pad(projects.length)}</dd>
+            </div>
+            <div className="grid gap-1">
+              <dt className={labelClass}>Theme</dt>
+              <dd>System</dd>
+            </div>
           </dl>
         </header>
 
-        <section className={ruleClass} aria-labelledby="gpt-work">
-          <div className="flex items-end justify-between gap-4 py-5">
-            <h2 id="gpt-work" className={labelClass}>
-              Selected work
+        <section className="mt-14" aria-labelledby="gpt-projects">
+          <div className="mb-5 flex items-baseline justify-between gap-4 border-border border-t pt-5">
+            <h2 id="gpt-projects" className={labelClass}>
+              Portfolio entries
             </h2>
-            <span className="text-muted-foreground text-[12px]">
-              Entries from shared data
-            </span>
+            <p className="font-mono text-[10px] text-muted-foreground">
+              shared data
+            </p>
           </div>
 
-          <ol className="divide-y divide-border border-border border-t">
-            {content.projects.map((project, index) => (
+          <ol className="divide-y divide-border border-border border-y">
+            {projects.map((project, projectIndex) => (
               <li key={project.title}>
-                <article className="grid gap-5 py-8 sm:grid-cols-12 sm:gap-8">
-                  <div className="space-y-3 sm:col-span-5">
-                    <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                      {(index + 1).toString().padStart(2, "0")}
-                    </p>
-                    <div className="space-y-2">
-                      <h3 className="font-medium text-[20px] tracking-[-0.025em]">
+                <article className="grid gap-6 py-7 sm:grid-cols-[1fr_16rem] sm:items-start">
+                  <div className="space-y-3">
+                    <div className="flex items-baseline gap-3">
+                      <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                        {pad(projectIndex + 1)}
+                      </span>
+                      <h3 className="font-medium text-[17px] tracking-[-0.02em]">
                         <NextLink
                           href={project.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                          className="transition-colors hover:text-accent"
                         >
                           {project.title}
                         </NextLink>
                       </h3>
-                      <p className="max-w-md text-muted-foreground text-normal">
-                        {project.description}
-                      </p>
                     </div>
-                    <p className="font-mono text-[11px] text-muted-foreground">
-                      {hostName(project.href)}
+
+                    <p className="max-w-lg text-[13px] leading-relaxed text-muted-foreground">
+                      {project.description}
                     </p>
+
+                    <NextLink
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`${linkClass} inline-flex font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground`}
+                    >
+                      {hostName(project.href)}
+                    </NextLink>
                   </div>
 
                   <NextLink
@@ -167,23 +184,23 @@ export default function GptVariantPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="group grid grid-cols-3 gap-2 sm:col-span-7"
+                    className="group grid grid-cols-3 gap-1.5"
                   >
                     {project.deckImages.map((image, imageIndex) => (
                       <span
                         key={image}
-                        className="relative block aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/40"
+                        className="relative block aspect-[3/4] overflow-hidden rounded-md border border-border bg-muted/40"
                       >
                         <Image
                           src={image}
                           alt=""
                           fill
-                          sizes="(min-width: 640px) 18vw, 30vw"
-                          className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                          sizes="(min-width: 640px) 5rem, 30vw"
+                          className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100"
                           draggable={false}
                         />
-                        <span className="absolute left-2 top-2 rounded-full border border-border/80 bg-background/80 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground backdrop-blur">
-                          {imageIndex + 1}
+                        <span className="absolute bottom-1.5 left-1.5 rounded-sm border border-border/80 bg-background/85 px-1 py-0.5 font-mono text-[9px] text-muted-foreground backdrop-blur-sm">
+                          {pad(imageIndex + 1)}
                         </span>
                       </span>
                     ))}
@@ -195,32 +212,36 @@ export default function GptVariantPage() {
         </section>
 
         <section
-          className={`${ruleClass} mt-10 py-6`}
+          className="mt-10 border-border border-t pt-5"
           aria-labelledby="gpt-connect"
         >
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="mb-4 flex items-baseline justify-between gap-4">
             <h2 id="gpt-connect" className={labelClass}>
               Connect
             </h2>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2">
-              {connectLinks.map((link) => (
-                <li key={link.label}>
-                  <NextLink
-                    href={link.href}
-                    target={link.href.startsWith("http") ? "_blank" : undefined}
-                    rel={
-                      link.href.startsWith("http")
-                        ? "noopener noreferrer"
-                        : undefined
-                    }
-                    className="text-muted-foreground text-normal underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
-                  >
-                    {link.label}
-                  </NextLink>
-                </li>
-              ))}
-            </ul>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {pad(connectLinks.length)} links
+            </span>
           </div>
+
+          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+            {connectLinks.map((link) => (
+              <li key={link.label}>
+                <NextLink
+                  href={link.href}
+                  target={link.href.startsWith("http") ? "_blank" : undefined}
+                  rel={
+                    link.href.startsWith("http")
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                  className={`${linkClass} text-[13px] text-muted-foreground`}
+                >
+                  {link.label}
+                </NextLink>
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
 
