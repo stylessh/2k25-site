@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import type { Metadata } from "next";
+import Image from "next/image";
 import NextLink from "next/link";
 import type { SVGProps } from "react";
 import { ModelVariantToolbar } from "@/components/model-variant-toolbar";
@@ -17,27 +18,28 @@ export const metadata: Metadata = {
   alternates: { canonical },
 };
 
-/** Resolved at build time; falls back to "now" if git history is unavailable. */
-function getLatestCommitDate(): Date {
+function getLatestCommitDate(): Date | null {
   try {
     const iso = execSync("git log -1 --format=%cI", {
+      cwd: process.cwd(),
+      encoding: "utf8",
       stdio: ["ignore", "pipe", "ignore"],
-    })
-      .toString()
-      .trim();
+    }).trim();
     const d = new Date(iso);
-    if (!Number.isNaN(d.getTime())) return d;
+    return Number.isNaN(d.getTime()) ? null : d;
   } catch {
-    /* fall through */
+    return null;
   }
-  return new Date();
 }
 
-const dateFmt = new Intl.DateTimeFormat("en-US", {
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "short",
   day: "2-digit",
+  timeZone: "UTC",
 });
+
+const pad = (n: number, w = 2) => n.toString().padStart(w, "0");
 
 function hostnameOf(url: string) {
   try {
@@ -47,11 +49,7 @@ function hostnameOf(url: string) {
   }
 }
 
-function pad(n: number, width = 2) {
-  return n.toString().padStart(width, "0");
-}
-
-function IconArrowOut(props: SVGProps<SVGSVGElement>) {
+function IconArrow(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       role="presentation"
@@ -59,7 +57,7 @@ function IconArrowOut(props: SVGProps<SVGSVGElement>) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.75}
+      strokeWidth={1.6}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -74,6 +72,9 @@ function IconArrowOut(props: SVGProps<SVGSVGElement>) {
 const monoLabel =
   "font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground";
 
+const ruleLabel =
+  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+
 const connectLinks = [
   { label: "GitHub", href: "https://github.com/stylessh" },
   { label: "X", href: "https://x.com/stylesshDev" },
@@ -83,117 +84,153 @@ const connectLinks = [
 export default function OpusVariantPage() {
   const { hero, projects } = CANONICAL_PORTFOLIO;
   const modified = getLatestCommitDate();
-  const modifiedLabel = dateFmt.format(modified);
+  const modifiedLabel = modified ? dateFormatter.format(modified) : "—";
 
   return (
-    <div className="bg-background text-foreground selection:bg-accent selection:text-accent-foreground pb-28">
-      <div className="mx-auto w-full max-w-xl px-6 sm:px-8 py-14 sm:py-20">
-        {/* Top meta strip */}
+    <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
+      <div className="mx-auto w-full max-w-3xl px-6 py-12 pb-28 sm:px-10 sm:py-16">
+        {/* Meta strip */}
         <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>Opus · Edition</span>
           <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
             <span aria-hidden className="size-1 rounded-full bg-accent" />
-            <span>Latest Modified — {modifiedLabel}</span>
+            Opus · Edition
+          </span>
+          <span className={monoLabel}>
+            <span className="text-muted-foreground/70">Latest Modified — </span>
+            {modified ? (
+              <time
+                dateTime={modified.toISOString()}
+                className="text-foreground"
+              >
+                {modifiedLabel}
+              </time>
+            ) : (
+              <span>{modifiedLabel}</span>
+            )}
           </span>
         </div>
 
         {/* Hero */}
-        <header className="space-y-5 pb-12">
-          <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[26px] sm:text-[28px] font-medium tracking-[-0.02em] leading-[1.1] text-foreground">
-            {hero.name}
-          </h1>
-          <p className="text-[13px] leading-relaxed text-foreground max-w-md">
-            {hero.intro}
-          </p>
-          <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
-            <span>{hero.employmentPrefix}</span>
-            {hero.showSupabaseMark ? (
-              <span className="inline-flex items-center rounded-md border border-border bg-muted/40 size-[1lh] p-0.5">
-                <span className="inline-flex shrink-0 w-full h-full items-center justify-center">
-                  <SupabaseMark className="h-full w-full" />
+        <header className="grid gap-6 border-border border-t pt-8 pb-10 sm:grid-cols-12 sm:gap-10">
+          <div className="space-y-3 sm:col-span-7">
+            <p className={monoLabel}>{hero.role}</p>
+            <h1 className="font-medium text-[24px] leading-[1.05] tracking-[-0.025em] sm:text-[28px]">
+              {hero.name}
+            </h1>
+            <p className="max-w-md pt-2 text-[13px] leading-relaxed text-foreground">
+              {hero.intro}
+            </p>
+            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-1 text-[13px] text-muted-foreground">
+              <span>{hero.employmentPrefix}</span>
+              {hero.showSupabaseMark ? (
+                <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
+                  <SupabaseMark className="size-full" />
                 </span>
-              </span>
-            ) : null}
-            <strong className="font-medium text-foreground">
-              {hero.orgName}
-            </strong>
-          </p>
+              ) : null}
+              <strong className="font-medium text-foreground">
+                {hero.orgName}
+              </strong>
+            </p>
+          </div>
+
+          <dl className="grid h-fit grid-cols-[auto_1fr] gap-x-5 gap-y-2.5 self-start sm:col-span-5 sm:border-border sm:border-l sm:pl-8">
+            <dt className={ruleLabel}>Index</dt>
+            <dd className="font-mono text-[11px] tabular-nums text-foreground">
+              {pad(projects.length)} / {pad(projects.length)}
+            </dd>
+            <dt className={ruleLabel}>Theme</dt>
+            <dd className="text-[12px] text-foreground">System · L/D</dd>
+            <dt className={ruleLabel}>Build</dt>
+            <dd className="font-mono text-[11px] tabular-nums text-foreground">
+              opus.02
+            </dd>
+            <dt className={ruleLabel}>Updated</dt>
+            <dd className="font-mono text-[11px] tabular-nums text-foreground">
+              {modifiedLabel}
+            </dd>
+          </dl>
         </header>
 
         {/* Section header */}
-        <div className="flex items-baseline justify-between gap-4 pb-4 border-t border-border pt-5">
-          <span className={monoLabel}>Selected Work</span>
-          <span className={monoLabel}>{pad(projects.length)} entries</span>
+        <div className="flex items-baseline justify-between gap-4 border-border border-t pt-5">
+          <span className={ruleLabel}>Selected Work</span>
+          <span className={ruleLabel}>{pad(projects.length)} entries</span>
         </div>
 
-        {/* Entries */}
-        <ol className="divide-y divide-border">
+        {/* Bento-style tile grid */}
+        <ol className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {projects.map((project, i) => {
-            const cover = project.deckImages[0];
             return (
-              <li key={project.title} className="py-8 first:pt-6">
-                <article className="space-y-4">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <div className="flex items-baseline gap-3 min-w-0">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground shrink-0">
-                        {pad(i + 1)}
-                      </span>
-                      <h2 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-accent transition-colors"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h2>
-                    </div>
-                    <NextLink
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              <li key={project.title}>
+                <NextLink
+                  href={project.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open ${project.title}`}
+                  className="group relative flex h-full flex-col overflow-hidden rounded-md border border-border bg-muted/30 transition-colors hover:border-foreground/30"
+                >
+                  {/* Stacked deck — base + cross-fading siblings on hover */}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted/40">
+                    {project.deckImages.map((src, idx) => (
+                      <Image
+                        key={src}
+                        src={src}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 22rem, 100vw"
+                        draggable={false}
+                        className={cn(
+                          "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
+                          idx === 0 && "opacity-100 group-hover:opacity-0",
+                          idx === 1 &&
+                            "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100",
+                          idx === 2 && "opacity-0",
+                        )}
+                      />
+                    ))}
+
+                    {/* Index chip */}
+                    <span className="absolute left-2 top-2 rounded-full border border-border/80 bg-background/85 px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-muted-foreground backdrop-blur">
+                      {pad(i + 1)}
+                    </span>
+
+                    {/* Hostname pill */}
+                    <span
+                      className={cn(
+                        "absolute right-2 top-2 inline-flex items-center gap-1 rounded-full border border-border/80 bg-background/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground backdrop-blur",
+                        "transition-colors group-hover:text-foreground",
+                      )}
                     >
                       <span>{hostnameOf(project.href)}</span>
-                      <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </NextLink>
+                      <IconArrow className="size-2.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </span>
                   </div>
 
-                  <p className="pl-7 text-[13px] leading-relaxed text-muted-foreground max-w-md">
-                    {project.description}
-                  </p>
-
-                  {cover ? (
-                    <NextLink
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Open ${project.title}`}
-                      className="block pl-7"
-                    >
-                      <div className="relative overflow-hidden rounded-md border border-border bg-muted/40 aspect-[16/9]">
-                        <img
-                          src={cover}
-                          alt=""
-                          className="absolute inset-0 size-full object-cover transition-transform duration-500 ease-out hover:scale-[1.015]"
-                          draggable={false}
-                        />
-                      </div>
-                    </NextLink>
-                  ) : null}
-                </article>
+                  {/* Caption */}
+                  <div className="flex flex-1 flex-col gap-2 p-3.5">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h2 className="text-[14px] font-medium tracking-[-0.01em] text-foreground transition-colors group-hover:text-accent">
+                        {project.title}
+                      </h2>
+                      <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                        {pad(project.deckImages.length)} shots
+                      </span>
+                    </div>
+                    <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+                      {project.description}
+                    </p>
+                  </div>
+                </NextLink>
               </li>
             );
           })}
         </ol>
 
         {/* Connect */}
-        <div className="border-t border-border pt-5 mt-2">
+        <section className="mt-10 border-border border-t pt-5">
           <div className="flex items-baseline justify-between gap-4 pb-4">
-            <span className={monoLabel}>Connect</span>
-            <span className={monoLabel}>
+            <span className={ruleLabel}>Connect</span>
+            <span className={ruleLabel}>
               {pad(connectLinks.length)} channels
             </span>
           </div>
@@ -203,7 +240,7 @@ export default function OpusVariantPage() {
                 {i > 0 ? (
                   <span
                     aria-hidden
-                    className="px-2 text-border select-none text-[10px]"
+                    className="select-none px-2 text-[10px] text-border"
                   >
                     /
                   </span>
@@ -216,28 +253,32 @@ export default function OpusVariantPage() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="group inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+                  className="group inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <span className="underline underline-offset-4 decoration-border/60 group-hover:decoration-foreground transition-all">
+                  <span className="underline decoration-border/60 underline-offset-4 transition-all group-hover:decoration-foreground">
                     {link.label}
                   </span>
-                  <IconArrowOut className="size-3 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  <IconArrow className="size-3 opacity-50 transition-opacity group-hover:opacity-100" />
                 </NextLink>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
 
-        {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
-          <span className={monoLabel}>stylessh.dev / opus</span>
-          <span className={monoLabel}>
-            <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
+        {/* Footer meta */}
+        <div className="mt-12 flex items-baseline justify-between gap-4 border-border border-t pt-3">
+          <span className={ruleLabel}>stylessh.dev / opus</span>
+          <span className={ruleLabel}>
+            {modified ? (
+              <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
+            ) : (
+              modifiedLabel
+            )}
           </span>
         </div>
       </div>
 
       <ModelVariantToolbar />
-    </div>
+    </main>
   );
 }
