@@ -74,10 +74,7 @@ function ProjectStrip({
   title: string;
 }) {
   return (
-    <div
-      className="grid grid-cols-3 gap-1.5 border-border border-t pt-3 sm:border-t-0 sm:pt-0"
-      aria-label={`${title} visual previews`}
-    >
+    <div className="grid grid-cols-3 gap-1.5 border-border border-t pt-3 sm:border-t-0 sm:pt-0">
       {images.slice(0, 3).map((image, index) => (
         <span
           key={image}
@@ -96,6 +93,7 @@ function ProjectStrip({
           </span>
         </span>
       ))}
+      <span className="sr-only">{title} visual previews</span>
     </div>
   );
 }
@@ -252,9 +250,7 @@ export default function GptVariantPage() {
                 <li key={link.label}>
                   <NextLink
                     href={link.href}
-                    target={
-                      link.href.startsWith("http") ? "_blank" : undefined
-                    }
+                    target={link.href.startsWith("http") ? "_blank" : undefined}
                     rel={
                       link.href.startsWith("http")
                         ? "noopener noreferrer"
