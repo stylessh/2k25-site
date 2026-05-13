@@ -51,7 +51,7 @@ function pad(n: number, width = 2) {
   return n.toString().padStart(width, "0");
 }
 
-function IconArrowOut(props: SVGProps<SVGSVGElement>) {
+function IconArrow(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       role="presentation"
@@ -71,8 +71,8 @@ function IconArrowOut(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const monoLabel =
-  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+const eyebrow =
+  "font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground";
 
 const connectLinks = [
   { label: "GitHub", href: "https://github.com/stylessh" },
@@ -80,155 +80,156 @@ const connectLinks = [
   { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-/** Static, layered preview of the deck images — a quiet nod to the
- * original site's hover-deck without any motion. */
-function DeckPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
-  const cards = images.slice(0, 3);
-  const offsets = [
-    "rotate-[-6deg] -translate-x-3 translate-y-1.5",
-    "rotate-[2deg] translate-y-0",
-    "rotate-[7deg] translate-x-3 translate-y-2",
-  ];
-
-  return (
-    <div className="relative h-16 w-[88px] shrink-0" aria-hidden>
-      {cards.map((src, i) => (
-        <span
-          key={src}
-          className={cn(
-            "absolute inset-0 m-auto block size-14 overflow-hidden rounded-[5px] border border-border bg-muted/40 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
-            offsets[i],
-          )}
-          style={{ zIndex: i + 1 }}
-        >
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="56px"
-            className="object-cover"
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
-        </span>
-      ))}
-      <span className="sr-only">Preview deck for {title}</span>
-    </div>
-  );
+function Rule() {
+  return <span aria-hidden className="block h-px w-full bg-border" />;
 }
 
 export default function OpusVariantPage() {
   const { hero, projects } = CANONICAL_PORTFOLIO;
   const modified = getLatestCommitDate();
   const modifiedLabel = modified ? dateFmt.format(modified) : "Unavailable";
+  const count = projects.length;
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-2xl px-6 py-14 pb-28 sm:px-8 sm:py-20">
-        {/* Path bar */}
-        <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>~ / opus</span>
-          <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
+      <div className="mx-auto w-full max-w-xl px-6 py-12 pb-28 sm:px-8 sm:py-16">
+        {/* Top status strip */}
+        <div className="flex items-center justify-between gap-4">
+          <span className={eyebrow}>stylessh.dev / opus</span>
+          <span className={cn(eyebrow, "inline-flex items-center gap-1.5")}>
             <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>
-              <span className="hidden sm:inline">Latest Modified · </span>
+              v{pad(count)}.{pad(0)}
+            </span>
+          </span>
+        </div>
+
+        <div className="mt-6">
+          <Rule />
+        </div>
+
+        {/* Hero */}
+        <header className="grid gap-5 pt-6 sm:grid-cols-[1fr_auto] sm:gap-8">
+          <div className="space-y-3">
+            <p className={eyebrow}>{hero.role}</p>
+            <h1 className="text-[20px] font-medium leading-[1.1] tracking-[-0.025em] text-foreground">
+              {hero.name}
+            </h1>
+            <p className="max-w-md text-[12.5px] leading-relaxed text-foreground">
+              {hero.intro}
+            </p>
+            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[12.5px] text-muted-foreground">
+              <span>{hero.employmentPrefix}</span>
+              {hero.showSupabaseMark ? (
+                <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
+                  <span className="inline-flex size-full shrink-0 items-center justify-center">
+                    <SupabaseMark className="size-full" />
+                  </span>
+                </span>
+              ) : null}
+              <strong className="font-medium text-foreground">
+                {hero.orgName}
+              </strong>
+            </p>
+          </div>
+        </header>
+
+        {/* Stats / meta strip */}
+        <dl className="mt-10 grid grid-cols-3 gap-x-4 border-t border-b border-border py-3">
+          <div className="flex flex-col gap-1">
+            <dt className={eyebrow}>Latest Modified</dt>
+            <dd className="font-mono text-[11px] tabular-nums text-foreground">
               {modified ? (
                 <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
               ) : (
                 modifiedLabel
               )}
-            </span>
-          </span>
-        </div>
+            </dd>
+          </div>
+          <div className="flex flex-col gap-1">
+            <dt className={eyebrow}>Entries</dt>
+            <dd className="font-mono text-[11px] tabular-nums text-foreground">
+              {pad(count)} / {pad(count)}
+            </dd>
+          </div>
+          <div className="flex flex-col gap-1">
+            <dt className={eyebrow}>Theme</dt>
+            <dd className="font-mono text-[11px] text-foreground">System</dd>
+          </div>
+        </dl>
 
-        {/* Hero */}
-        <header className="space-y-5 border-t border-border pt-8">
-          <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[22px] font-medium tracking-[-0.025em] leading-[1.1] text-foreground">
-            {hero.name}
-          </h1>
-          <p className="max-w-md text-[13px] leading-relaxed text-foreground">
-            {hero.intro}
-          </p>
-          <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
-            <span>{hero.employmentPrefix}</span>
-            {hero.showSupabaseMark ? (
-              <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
-                <span className="inline-flex size-full shrink-0 items-center justify-center">
-                  <SupabaseMark className="size-full" />
-                </span>
-              </span>
-            ) : null}
-            <strong className="font-medium text-foreground">
-              {hero.orgName}
-            </strong>
-          </p>
-        </header>
-
-        {/* Section: Work */}
-        <section className="mt-12" aria-labelledby="opus-work">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-2">
-            <h2 id="opus-work" className={monoLabel}>
-              [ Work ]
+        {/* Catalog */}
+        <section className="mt-10" aria-labelledby="opus-catalog">
+          <div className="flex items-baseline justify-between gap-4 pb-3">
+            <h2 id="opus-catalog" className={eyebrow}>
+              § Catalog
             </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(projects.length)} / {pad(projects.length)}
+            <span className={cn(eyebrow, "tabular-nums")}>
+              {pad(count)} entries
             </span>
           </div>
 
-          <ol className="divide-y divide-border">
+          <ol className="divide-y divide-border border-t border-border">
             {projects.map((project, i) => (
               <li key={project.title}>
-                <article className="grid grid-cols-[1fr_auto] items-start gap-4 py-7 sm:gap-8">
-                  <div className="min-w-0 space-y-2.5">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {pad(i + 1)}
-                      </span>
-                      <h3 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
-
-                    <p className="pl-7 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
+                <article className="space-y-3.5 py-6">
+                  {/* Title row */}
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-mono text-[10px] tabular-nums text-muted-foreground">
+                      {pad(i + 1)}
+                    </span>
+                    <h3 className="flex-1 text-[14px] font-medium tracking-[-0.01em]">
+                      <NextLink
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground transition-colors hover:text-accent"
+                      >
+                        {project.title}
+                      </NextLink>
+                    </h3>
                     <NextLink
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group ml-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                      className="group inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
                     >
                       <span>{hostnameOf(project.href)}</span>
-                      <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      <IconArrow className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                     </NextLink>
                   </div>
 
+                  {/* Description */}
+                  <p className="pl-7 max-w-md text-[12.5px] leading-relaxed text-muted-foreground">
+                    {project.description}
+                  </p>
+
+                  {/* Filmstrip */}
                   <NextLink
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="shrink-0 self-start pt-1 transition-opacity hover:opacity-90"
+                    className="group ml-7 grid grid-cols-3 gap-1.5"
                   >
-                    <DeckPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
+                    {project.deckImages.map((src, idx) => (
+                      <span
+                        key={src}
+                        className="relative block aspect-[4/3] overflow-hidden rounded-[4px] border border-border bg-muted/40 transition-colors group-hover:border-foreground/20"
+                      >
+                        <Image
+                          src={src}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 9rem, 30vw"
+                          className="object-cover opacity-95 transition-opacity group-hover:opacity-100"
+                          draggable={false}
+                        />
+                        <span className="pointer-events-none absolute left-1 top-1 rounded-sm border border-border/70 bg-background/85 px-1 py-[1px] font-mono text-[8.5px] uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-sm">
+                          {pad(i + 1)}.{pad(idx + 1)}
+                        </span>
+                      </span>
+                    ))}
                   </NextLink>
                 </article>
               </li>
@@ -236,13 +237,13 @@ export default function OpusVariantPage() {
           </ol>
         </section>
 
-        {/* Section: Connect */}
-        <section className="mt-10" aria-labelledby="opus-connect">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-3">
-            <h2 id="opus-connect" className={monoLabel}>
-              [ Connect ]
+        {/* Channels */}
+        <section className="mt-10" aria-labelledby="opus-channels">
+          <div className="flex items-baseline justify-between gap-4 border-t border-border pt-4 pb-3">
+            <h2 id="opus-channels" className={eyebrow}>
+              § Channels
             </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
+            <span className={cn(eyebrow, "tabular-nums")}>
               {pad(connectLinks.length)} ch
             </span>
           </div>
@@ -255,7 +256,7 @@ export default function OpusVariantPage() {
                     aria-hidden
                     className="select-none px-2 text-[10px] text-border"
                   >
-                    ·
+                    /
                   </span>
                 ) : null}
                 <NextLink
@@ -266,29 +267,35 @@ export default function OpusVariantPage() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="group inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                  className="group inline-flex items-center gap-1 text-[12.5px] text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  <span className="underline decoration-border/60 underline-offset-4 transition-all group-hover:decoration-foreground">
+                  <span className="underline decoration-border/60 underline-offset-4 transition-colors group-hover:decoration-foreground">
                     {link.label}
                   </span>
-                  <IconArrowOut className="size-3 opacity-50 transition-opacity group-hover:opacity-100" />
+                  <IconArrow className="size-3 opacity-50 transition-opacity group-hover:opacity-100" />
                 </NextLink>
               </li>
             ))}
           </ul>
         </section>
 
-        {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
-          <span className={monoLabel}>stylessh.dev / opus</span>
-          <span className={monoLabel}>
+        {/* Footer colophon */}
+        <footer className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
+          <span className={eyebrow}>— end of catalog —</span>
+          <span className={cn(eyebrow, "inline-flex items-center gap-1.5")}>
+            <span>Updated</span>
             {modified ? (
-              <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
+              <time
+                dateTime={modified.toISOString()}
+                className="font-mono tabular-nums text-foreground"
+              >
+                {modifiedLabel}
+              </time>
             ) : (
-              modifiedLabel
+              <span className="text-foreground">{modifiedLabel}</span>
             )}
           </span>
-        </div>
+        </footer>
       </div>
 
       <ModelVariantToolbar />
