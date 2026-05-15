@@ -9,8 +9,9 @@ import { CANONICAL_PORTFOLIO } from "@/lib/portfolio-content";
 const canonical = "https://stylessh.dev";
 
 export const metadata: Metadata = {
-  title: "Alan Daniel — GPT variant",
-  description: "Alternate portfolio build (GPT). Canonical site: stylessh.dev.",
+  title: "Alan Daniel — GPT portfolio",
+  description:
+    "Alternate portfolio interpretation (GPT). Canonical site: stylessh.dev.",
   robots: { index: false, follow: true },
   alternates: { canonical },
 };
@@ -30,11 +31,10 @@ function getLatestCommitDate(): Date | null {
   }
 }
 
-const content = CANONICAL_PORTFOLIO;
 const labelClass =
-  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+  "font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground";
 const linkClass =
-  "underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground";
+  "text-muted-foreground underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -48,12 +48,12 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 });
 
 const connectLinks = [
-  { label: "GitHub", href: "https://github.com/stylessh" },
-  { label: "X", href: "https://x.com/stylesshDev" },
-  { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
+  { label: "github", href: "https://github.com/stylessh" },
+  { label: "x", href: "https://x.com/stylesshDev" },
+  { label: "mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-function hostName(href: string) {
+function getHostName(href: string) {
   try {
     return new URL(href).hostname.replace(/^www\./, "");
   } catch {
@@ -65,55 +65,76 @@ function pad(value: number) {
   return value.toString().padStart(2, "0");
 }
 
+function ProjectImages({ images }: { images: readonly string[] }) {
+  return (
+    <div className="grid grid-cols-3 gap-1.5 sm:max-w-[11rem]" aria-hidden>
+      {images.map((image, imageIndex) => (
+        <span
+          key={image}
+          className="relative aspect-[4/5] overflow-hidden rounded-[6px] border border-border bg-muted-foreground/5"
+        >
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(min-width: 640px) 56px, 28vw"
+            className="object-cover opacity-90 grayscale transition duration-300 hover:grayscale-0 dark:opacity-80"
+            draggable={false}
+          />
+          <span className="absolute right-1 bottom-1 rounded-sm border border-border bg-background/85 px-1 font-mono text-[9px] text-muted-foreground tabular-nums">
+            {pad(imageIndex + 1)}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function GptVariantPage() {
   const latestModified = getLatestCommitDate();
   const latestModifiedText = latestModified
     ? dateFormatter.format(latestModified)
     : "Unavailable";
-  const { hero, projects } = content;
+  const { hero, projects } = CANONICAL_PORTFOLIO;
 
   return (
     <main className="min-h-dvh bg-background pb-28 text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:px-8 sm:py-16">
-        <nav className="mb-12 flex items-center justify-between gap-4">
-          <NextLink
-            href="/"
-            className={`${linkClass} text-[13px] text-muted-foreground`}
-          >
-            Original
+      <div className="mx-auto w-full max-w-5xl px-6 py-12 sm:px-8 sm:py-16">
+        <nav className="mb-14 flex items-center justify-between gap-4">
+          <NextLink href="/" className={`${linkClass} text-[12px]`}>
+            original
           </NextLink>
-          <span className={labelClass}>GPT portfolio</span>
+          <span className={labelClass}>/gpt alternate</span>
         </nav>
 
-        <header className="grid gap-8 border-border border-t pt-6 sm:grid-cols-[1fr_15rem]">
-          <div className="space-y-6">
-            <div className="space-y-1.5">
-              <p className={labelClass}>{hero.role}</p>
-              <h1 className="font-medium text-[24px] leading-tight tracking-[-0.03em] sm:text-[30px]">
-                {hero.name}
-              </h1>
-            </div>
+        <header className="grid gap-10 border-border border-t pt-6 lg:grid-cols-[minmax(0,1fr)_16rem]">
+          <div className="max-w-xl space-y-7">
+            <p className={labelClass}>{hero.role}</p>
+            <h1 className="font-medium text-[28px] leading-none tracking-[-0.04em] sm:text-[38px]">
+              {hero.name}
+            </h1>
 
-            <div className="max-w-md space-y-4">
-              <p className="text-[14px] leading-relaxed">{hero.intro}</p>
-              <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
-                <span>{hero.employmentPrefix}</span>
-                {hero.showSupabaseMark ? (
-                  <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
-                    <SupabaseMark className="size-full" />
-                  </span>
-                ) : null}
-                <strong className="font-medium text-foreground">
-                  {hero.orgName}
-                </strong>
-              </p>
-            </div>
+            <p className="max-w-md text-[14px] leading-relaxed text-foreground">
+              {hero.intro}
+            </p>
+
+            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
+              <span>{hero.employmentPrefix}</span>
+              {hero.showSupabaseMark ? (
+                <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
+                  <SupabaseMark className="size-full" />
+                </span>
+              ) : null}
+              <strong className="font-medium text-foreground">
+                {hero.orgName}
+              </strong>
+            </p>
           </div>
 
-          <dl className="grid content-start gap-3 border-border border-t pt-5 text-[13px] sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0">
-            <div className="grid gap-1">
+          <dl className="grid content-start gap-4 border-border border-t pt-5 text-[13px] lg:border-t-0 lg:border-l lg:pl-6 lg:pt-0">
+            <div className="grid gap-1.5">
               <dt className={labelClass}>Latest Modified</dt>
-              <dd className="tabular-nums">
+              <dd className="font-mono text-[11px] text-foreground tabular-nums">
                 {latestModified ? (
                   <time dateTime={latestModified.toISOString()}>
                     {latestModifiedText}
@@ -123,59 +144,59 @@ export default function GptVariantPage() {
                 )}
               </dd>
             </div>
-            <div className="grid gap-1">
-              <dt className={labelClass}>Entries</dt>
-              <dd className="tabular-nums">{pad(projects.length)}</dd>
+            <div className="grid gap-1.5">
+              <dt className={labelClass}>Portfolio entries</dt>
+              <dd className="font-mono text-[11px] tabular-nums">
+                {pad(projects.length)}
+              </dd>
             </div>
-            <div className="grid gap-1">
-              <dt className={labelClass}>Theme</dt>
-              <dd>System</dd>
+            <div className="grid gap-1.5">
+              <dt className={labelClass}>Mode</dt>
+              <dd className="text-muted-foreground">system theme</dd>
             </div>
           </dl>
         </header>
 
-        <section className="mt-14" aria-labelledby="gpt-projects">
-          <div className="mb-5 flex items-baseline justify-between gap-4 border-border border-t pt-5">
+        <section className="mt-16" aria-labelledby="gpt-projects">
+          <div className="grid gap-2 border-border border-t pt-5 sm:grid-cols-[9rem_1fr]">
             <h2 id="gpt-projects" className={labelClass}>
-              Portfolio entries
+              Selected work
             </h2>
-            <p className="font-mono text-[10px] text-muted-foreground">
-              shared data
+            <p className="max-w-md text-[13px] leading-relaxed text-muted-foreground">
+              A compact index of public projects, using the same shared source
+              data and visual decks as the main portfolio.
             </p>
           </div>
 
-          <ol className="divide-y divide-border border-border border-y">
+          <ol className="mt-7 divide-y divide-border border-border border-y">
             {projects.map((project, projectIndex) => (
               <li key={project.title}>
-                <article className="grid gap-6 py-7 sm:grid-cols-[1fr_16rem] sm:items-start">
-                  <div className="space-y-3">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                        {pad(projectIndex + 1)}
-                      </span>
-                      <h3 className="font-medium text-[17px] tracking-[-0.02em]">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="transition-colors hover:text-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
+                <article className="grid gap-5 py-7 sm:grid-cols-[9rem_minmax(0,1fr)_11rem] sm:items-start">
+                  <div className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                    {pad(projectIndex + 1)}
+                  </div>
 
-                    <p className="max-w-lg text-[13px] leading-relaxed text-muted-foreground">
+                  <div className="min-w-0 space-y-3">
+                    <h3 className="font-medium text-[16px] tracking-[-0.02em]">
+                      <NextLink
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline decoration-border underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                      >
+                        {project.title}
+                      </NextLink>
+                    </h3>
+                    <p className="max-w-xl text-[13px] leading-relaxed text-muted-foreground">
                       {project.description}
                     </p>
-
                     <NextLink
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`${linkClass} inline-flex font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground`}
+                      className={`${linkClass} inline-flex font-mono text-[10px] uppercase tracking-[0.16em]`}
                     >
-                      {hostName(project.href)}
+                      {getHostName(project.href)}
                     </NextLink>
                   </div>
 
@@ -184,26 +205,9 @@ export default function GptVariantPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="group grid grid-cols-3 gap-1.5"
+                    className="block transition-opacity hover:opacity-90"
                   >
-                    {project.deckImages.map((image, imageIndex) => (
-                      <span
-                        key={image}
-                        className="relative block aspect-[3/4] overflow-hidden rounded-md border border-border bg-muted/40"
-                      >
-                        <Image
-                          src={image}
-                          alt=""
-                          fill
-                          sizes="(min-width: 640px) 5rem, 30vw"
-                          className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100"
-                          draggable={false}
-                        />
-                        <span className="absolute bottom-1.5 left-1.5 rounded-sm border border-border/80 bg-background/85 px-1 py-0.5 font-mono text-[9px] text-muted-foreground backdrop-blur-sm">
-                          {pad(imageIndex + 1)}
-                        </span>
-                      </span>
-                    ))}
+                    <ProjectImages images={project.deckImages} />
                   </NextLink>
                 </article>
               </li>
@@ -212,19 +216,13 @@ export default function GptVariantPage() {
         </section>
 
         <section
-          className="mt-10 border-border border-t pt-5"
+          className="mt-10 grid gap-5 border-border border-t pt-5 sm:grid-cols-[9rem_1fr]"
           aria-labelledby="gpt-connect"
         >
-          <div className="mb-4 flex items-baseline justify-between gap-4">
-            <h2 id="gpt-connect" className={labelClass}>
-              Connect
-            </h2>
-            <span className="font-mono text-[10px] text-muted-foreground">
-              {pad(connectLinks.length)} links
-            </span>
-          </div>
-
-          <ul className="flex flex-wrap gap-x-4 gap-y-2">
+          <h2 id="gpt-connect" className={labelClass}>
+            Connect
+          </h2>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
             {connectLinks.map((link) => (
               <li key={link.label}>
                 <NextLink
@@ -235,7 +233,7 @@ export default function GptVariantPage() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className={`${linkClass} text-[13px] text-muted-foreground`}
+                  className={`${linkClass} text-[13px]`}
                 >
                   {link.label}
                 </NextLink>
