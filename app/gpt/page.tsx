@@ -67,10 +67,7 @@ function pad(value: number) {
 
 function ProjectImages({ images }: { images: readonly string[] }) {
   return (
-    <div
-      className="grid grid-cols-3 gap-1.5 sm:max-w-[11rem]"
-      aria-hidden
-    >
+    <div className="grid grid-cols-3 gap-1.5 sm:max-w-[11rem]" aria-hidden>
       {images.map((image, imageIndex) => (
         <span
           key={image}
@@ -104,10 +101,7 @@ export default function GptVariantPage() {
     <main className="min-h-dvh bg-background pb-28 text-foreground selection:bg-accent selection:text-accent-foreground">
       <div className="mx-auto w-full max-w-5xl px-6 py-12 sm:px-8 sm:py-16">
         <nav className="mb-14 flex items-center justify-between gap-4">
-          <NextLink
-            href="/"
-            className={`${linkClass} text-[12px]`}
-          >
+          <NextLink href="/" className={`${linkClass} text-[12px]`}>
             original
           </NextLink>
           <span className={labelClass}>/gpt alternate</span>
