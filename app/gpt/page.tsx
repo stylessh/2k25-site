@@ -94,9 +94,7 @@ export default function GptVariantPage() {
                 <h1 className="font-medium text-[28px] leading-none tracking-[-0.04em] sm:text-[34px]">
                   {hero.name}
                 </h1>
-                <p className="text-[13px] text-muted-foreground">
-                  {hero.role}
-                </p>
+                <p className="text-[13px] text-muted-foreground">{hero.role}</p>
               </div>
             </div>
 
@@ -172,8 +170,8 @@ export default function GptVariantPage() {
                 id="work"
                 className="max-w-lg font-medium text-[18px] leading-snug tracking-[-0.03em]"
               >
-                Portfolio entries arranged as quiet records with attached
-                visual evidence.
+                Portfolio entries arranged as quiet records with attached visual
+                evidence.
               </h2>
             </div>
             <span className="hidden font-mono text-[10px] text-muted-foreground sm:inline">
