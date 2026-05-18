@@ -80,60 +80,18 @@ const connectLinks = [
   { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-/** Static, layered preview of the deck images — a quiet nod to the
- * original site's hover-deck without any motion. */
-function DeckPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
-  const cards = images.slice(0, 3);
-  const offsets = [
-    "rotate-[-6deg] -translate-x-3 translate-y-1.5",
-    "rotate-[2deg] translate-y-0",
-    "rotate-[7deg] translate-x-3 translate-y-2",
-  ];
-
-  return (
-    <div className="relative h-16 w-[88px] shrink-0" aria-hidden>
-      {cards.map((src, i) => (
-        <span
-          key={src}
-          className={cn(
-            "absolute inset-0 m-auto block size-14 overflow-hidden rounded-[5px] border border-border bg-muted/40 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
-            offsets[i],
-          )}
-          style={{ zIndex: i + 1 }}
-        >
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="56px"
-            className="object-cover"
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
-        </span>
-      ))}
-      <span className="sr-only">Preview deck for {title}</span>
-    </div>
-  );
-}
-
 export default function OpusVariantPage() {
   const { hero, projects } = CANONICAL_PORTFOLIO;
   const modified = getLatestCommitDate();
   const modifiedLabel = modified ? dateFmt.format(modified) : "Unavailable";
+  const totalFrames = projects.reduce((acc, p) => acc + p.deckImages.length, 0);
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-2xl px-6 py-14 pb-28 sm:px-8 sm:py-20">
+      <div className="mx-auto w-full max-w-2xl px-6 pt-10 pb-28 sm:px-8 sm:pt-14">
         {/* Path bar */}
-        <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>~ / opus</span>
+        <div className="flex items-center justify-between gap-4 pb-12">
+          <span className={monoLabel}>opus · catalog</span>
           <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
             <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>
@@ -148,9 +106,9 @@ export default function OpusVariantPage() {
         </div>
 
         {/* Hero */}
-        <header className="space-y-5 border-t border-border pt-8">
+        <header className="space-y-5">
           <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[22px] font-medium tracking-[-0.025em] leading-[1.1] text-foreground">
+          <h1 className="text-[26px] font-medium tracking-[-0.03em] leading-[1.05] text-foreground">
             {hero.name}
           </h1>
           <p className="max-w-md text-[13px] leading-relaxed text-foreground">
@@ -172,78 +130,121 @@ export default function OpusVariantPage() {
         </header>
 
         {/* Section: Work */}
-        <section className="mt-12" aria-labelledby="opus-work">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-2">
+        <section className="mt-16" aria-labelledby="opus-work">
+          <div className="mb-5 flex items-baseline justify-between gap-4">
             <h2 id="opus-work" className={monoLabel}>
-              [ Work ]
+              Selected Work
             </h2>
             <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(projects.length)} / {pad(projects.length)}
+              {pad(projects.length)} entries · {pad(totalFrames)} frames
             </span>
           </div>
 
-          <ol className="divide-y divide-border">
-            {projects.map((project, i) => (
-              <li key={project.title}>
-                <article className="grid grid-cols-[1fr_auto] items-start gap-4 py-7 sm:gap-8">
-                  <div className="min-w-0 space-y-2.5">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {pad(i + 1)}
-                      </span>
-                      <h3 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
-
-                    <p className="pl-7 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
+          <ol className="space-y-14">
+            {projects.map((project, i) => {
+              const [cover, ...rest] = project.deckImages;
+              return (
+                <li key={project.title}>
+                  <article className="group space-y-4">
+                    {/* Cover image */}
                     <NextLink
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group ml-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                      aria-label={`Open ${project.title}`}
+                      className="relative block aspect-[16/10] overflow-hidden rounded-lg border border-border bg-muted/40"
+                    >
+                      <Image
+                        src={cover}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 36rem, 100vw"
+                        className="object-cover transition duration-500 ease-out group-hover:scale-[1.015]"
+                        draggable={false}
+                      />
+                      <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
+                      <span
+                        aria-hidden
+                        className={cn(
+                          monoLabel,
+                          "absolute left-2.5 top-2.5 rounded-sm border border-border/80 bg-background/85 px-1.5 py-0.5 tabular-nums backdrop-blur-sm",
+                        )}
+                      >
+                        {pad(i + 1)}
+                      </span>
+                    </NextLink>
+
+                    {/* Meta row: title + hostname */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 space-y-1.5">
+                        <h3 className="text-[15px] font-medium tracking-[-0.01em]">
+                          <NextLink
+                            href={project.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-foreground transition-colors hover:text-accent"
+                          >
+                            {project.title}
+                          </NextLink>
+                        </h3>
+                        <p className="max-w-md text-[13px] leading-relaxed text-muted-foreground">
+                          {project.description}
+                        </p>
+                      </div>
+
+                      {/* Remaining frames as film strip */}
+                      {rest.length > 0 ? (
+                        <div
+                          className="hidden shrink-0 sm:flex sm:items-center sm:gap-1"
+                          aria-hidden
+                        >
+                          {rest.map((src, idx) => (
+                            <span
+                              key={src}
+                              className="relative block aspect-[16/10] w-14 overflow-hidden rounded-[5px] border border-border bg-muted/40"
+                            >
+                              <Image
+                                src={src}
+                                alt=""
+                                fill
+                                sizes="56px"
+                                className="object-cover opacity-80 transition-opacity duration-300 group-hover:opacity-100"
+                                draggable={false}
+                              />
+                              <span className="absolute bottom-0.5 right-0.5 font-mono text-[8px] text-background/0 tabular-nums">
+                                {pad(idx + 2)}
+                              </span>
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {/* Footer row: hostname link */}
+                    <NextLink
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/link inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
                     >
                       <span>{hostnameOf(project.href)}</span>
-                      <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      <IconArrowOut className="size-3 transition-transform group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
                     </NextLink>
-                  </div>
-
-                  <NextLink
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Open ${project.title}`}
-                    className="shrink-0 self-start pt-1 transition-opacity hover:opacity-90"
-                  >
-                    <DeckPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
-                  </NextLink>
-                </article>
-              </li>
-            ))}
+                  </article>
+                </li>
+              );
+            })}
           </ol>
         </section>
 
         {/* Section: Connect */}
-        <section className="mt-10" aria-labelledby="opus-connect">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-3">
+        <section className="mt-16" aria-labelledby="opus-connect">
+          <div className="mb-4 flex items-baseline justify-between gap-4">
             <h2 id="opus-connect" className={monoLabel}>
-              [ Connect ]
+              Connect
             </h2>
             <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(connectLinks.length)} ch
+              {pad(connectLinks.length)} channels
             </span>
           </div>
 
@@ -279,7 +280,7 @@ export default function OpusVariantPage() {
         </section>
 
         {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
+        <div className="mt-16 flex items-baseline justify-between gap-4 border-t border-border pt-4">
           <span className={monoLabel}>stylessh.dev / opus</span>
           <span className={monoLabel}>
             {modified ? (
