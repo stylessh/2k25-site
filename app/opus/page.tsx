@@ -71,8 +71,8 @@ function IconArrowOut(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const monoLabel =
-  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+const mono =
+  "font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground";
 
 const connectLinks = [
   { label: "GitHub", href: "https://github.com/stylessh" },
@@ -80,61 +80,19 @@ const connectLinks = [
   { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-/** Static, layered preview of the deck images — a quiet nod to the
- * original site's hover-deck without any motion. */
-function DeckPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
-  const cards = images.slice(0, 3);
-  const offsets = [
-    "rotate-[-6deg] -translate-x-3 translate-y-1.5",
-    "rotate-[2deg] translate-y-0",
-    "rotate-[7deg] translate-x-3 translate-y-2",
-  ];
-
-  return (
-    <div className="relative h-16 w-[88px] shrink-0" aria-hidden>
-      {cards.map((src, i) => (
-        <span
-          key={src}
-          className={cn(
-            "absolute inset-0 m-auto block size-14 overflow-hidden rounded-[5px] border border-border bg-muted/40 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
-            offsets[i],
-          )}
-          style={{ zIndex: i + 1 }}
-        >
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="56px"
-            className="object-cover"
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
-        </span>
-      ))}
-      <span className="sr-only">Preview deck for {title}</span>
-    </div>
-  );
-}
-
 export default function OpusVariantPage() {
   const { hero, projects } = CANONICAL_PORTFOLIO;
   const modified = getLatestCommitDate();
   const modifiedLabel = modified ? dateFmt.format(modified) : "Unavailable";
+  const total = projects.length;
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-2xl px-6 py-14 pb-28 sm:px-8 sm:py-20">
-        {/* Path bar */}
-        <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>~ / opus</span>
-          <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
+      <div className="mx-auto w-full max-w-xl px-6 pt-10 pb-28 sm:px-8 sm:pt-14">
+        {/* Top meta strip */}
+        <div className="flex items-center justify-between gap-4 pb-12">
+          <span className={mono}>Folio · Opus</span>
+          <span className={cn(mono, "inline-flex items-center gap-2")}>
             <span aria-hidden className="size-1 rounded-full bg-accent" />
             <span>
               <span className="hidden sm:inline">Latest Modified · </span>
@@ -148,9 +106,9 @@ export default function OpusVariantPage() {
         </div>
 
         {/* Hero */}
-        <header className="space-y-5 border-t border-border pt-8">
-          <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[22px] font-medium tracking-[-0.025em] leading-[1.1] text-foreground">
+        <header className="grid gap-5">
+          <p className={mono}>{hero.role}</p>
+          <h1 className="text-[20px] font-medium tracking-[-0.025em] leading-[1.15]">
             {hero.name}
           </h1>
           <p className="max-w-md text-[13px] leading-relaxed text-foreground">
@@ -171,91 +129,126 @@ export default function OpusVariantPage() {
           </p>
         </header>
 
-        {/* Section: Work */}
-        <section className="mt-12" aria-labelledby="opus-work">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-2">
-            <h2 id="opus-work" className={monoLabel}>
-              [ Work ]
-            </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(projects.length)} / {pad(projects.length)}
-            </span>
-          </div>
+        {/* Section header */}
+        <div className="mt-16 mb-6 flex items-baseline justify-between gap-4">
+          <h2 className={mono}>Selected — Contact Sheet</h2>
+          <span className={cn(mono, "tabular-nums")}>{pad(total)} entries</span>
+        </div>
 
-          <ol className="divide-y divide-border">
-            {projects.map((project, i) => (
+        {/* Contact sheet — one large frame + caption per project */}
+        <ol className="space-y-14">
+          {projects.map((project, i) => {
+            const primary = project.deckImages[0];
+            const aux = project.deckImages.slice(1, 3);
+
+            return (
               <li key={project.title}>
-                <article className="grid grid-cols-[1fr_auto] items-start gap-4 py-7 sm:gap-8">
-                  <div className="min-w-0 space-y-2.5">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {pad(i + 1)}
-                      </span>
-                      <h3 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
-
-                    <p className="pl-7 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
-                    <NextLink
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group ml-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      <span>{hostnameOf(project.href)}</span>
-                      <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </NextLink>
+                <article className="grid gap-4">
+                  {/* Caption header line */}
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className={cn(mono, "tabular-nums")}>
+                      Entry {pad(i + 1)} / {pad(total)}
+                    </span>
+                    <span className={cn(mono, "truncate")}>
+                      {hostnameOf(project.href)}
+                    </span>
                   </div>
 
+                  {/* Primary frame */}
                   <NextLink
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="shrink-0 self-start pt-1 transition-opacity hover:opacity-90"
+                    className="group relative block overflow-hidden rounded-md border border-border bg-muted/30"
                   >
-                    <DeckPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
+                    {primary ? (
+                      <span className="relative block aspect-[16/10] w-full">
+                        <Image
+                          src={primary}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 36rem, 90vw"
+                          className="object-cover transition-opacity duration-300 group-hover:opacity-95"
+                          draggable={false}
+                          priority={i === 0}
+                        />
+                        <span
+                          aria-hidden
+                          className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.04]"
+                        />
+                      </span>
+                    ) : null}
+
+                    {/* Frame corners — quiet contact-sheet ticks */}
+                    <FrameTicks />
                   </NextLink>
+
+                  {/* Aux strip (remaining deck images, small) */}
+                  {aux.length > 0 ? (
+                    <ul className="grid grid-cols-6 gap-1.5" aria-hidden>
+                      {aux.map((src) => (
+                        <li
+                          key={src}
+                          className="relative col-span-1 block aspect-square overflow-hidden rounded-[3px] border border-border bg-muted/40"
+                        >
+                          <Image
+                            src={src}
+                            alt=""
+                            fill
+                            sizes="48px"
+                            className="object-cover"
+                            draggable={false}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+
+                  {/* Caption body */}
+                  <div className="grid gap-2 pt-1">
+                    <h3 className="text-[15px] font-medium tracking-[-0.01em]">
+                      <NextLink
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-1.5 text-foreground transition-colors hover:text-accent"
+                      >
+                        <span className="underline decoration-border/70 underline-offset-4 transition-colors group-hover:decoration-accent">
+                          {project.title}
+                        </span>
+                        <IconArrowOut className="size-3 opacity-60 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" />
+                      </NextLink>
+                    </h3>
+                    <p className="max-w-md text-[13px] leading-relaxed text-muted-foreground">
+                      {project.description}
+                    </p>
+                  </div>
                 </article>
               </li>
-            ))}
-          </ol>
-        </section>
+            );
+          })}
+        </ol>
 
-        {/* Section: Connect */}
-        <section className="mt-10" aria-labelledby="opus-connect">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-3">
-            <h2 id="opus-connect" className={monoLabel}>
-              [ Connect ]
+        {/* Connect */}
+        <section className="mt-16" aria-labelledby="opus-connect">
+          <div className="mb-3 flex items-baseline justify-between gap-4">
+            <h2 id="opus-connect" className={mono}>
+              Channels
             </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(connectLinks.length)} ch
+            <span className={cn(mono, "tabular-nums")}>
+              {pad(connectLinks.length)} open
             </span>
           </div>
-
-          <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
+          <ul className="flex flex-wrap items-center text-[13px]">
             {connectLinks.map((link, i) => (
-              <li key={link.label} className="flex items-center">
+              <li key={link.label} className="inline-flex items-center">
                 {i > 0 ? (
                   <span
                     aria-hidden
-                    className="select-none px-2 text-[10px] text-border"
+                    className="select-none px-2 text-[11px] text-border"
                   >
-                    ·
+                    |
                   </span>
                 ) : null}
                 <NextLink
@@ -266,7 +259,7 @@ export default function OpusVariantPage() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="group inline-flex items-center gap-1.5 text-[13px] text-muted-foreground transition-colors hover:text-foreground"
+                  className="group inline-flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <span className="underline decoration-border/60 underline-offset-4 transition-all group-hover:decoration-foreground">
                     {link.label}
@@ -278,10 +271,11 @@ export default function OpusVariantPage() {
           </ul>
         </section>
 
-        {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
-          <span className={monoLabel}>stylessh.dev / opus</span>
-          <span className={monoLabel}>
+        {/* Footer stamp */}
+        <div className="mt-14 flex items-baseline justify-between gap-4 border-t border-border pt-3">
+          <span className={mono}>stylessh.dev / opus</span>
+          <span className={mono}>
+            Rev ·{" "}
             {modified ? (
               <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
             ) : (
@@ -293,5 +287,30 @@ export default function OpusVariantPage() {
 
       <ModelVariantToolbar />
     </main>
+  );
+}
+
+function FrameTicks() {
+  const base =
+    "pointer-events-none absolute size-2 border-foreground/30 dark:border-foreground/25";
+  return (
+    <>
+      <span
+        aria-hidden
+        className={cn(base, "left-1 top-1 border-l border-t")}
+      />
+      <span
+        aria-hidden
+        className={cn(base, "right-1 top-1 border-r border-t")}
+      />
+      <span
+        aria-hidden
+        className={cn(base, "left-1 bottom-1 border-l border-b")}
+      />
+      <span
+        aria-hidden
+        className={cn(base, "right-1 bottom-1 border-r border-b")}
+      />
+    </>
   );
 }
