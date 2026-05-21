@@ -71,8 +71,8 @@ function IconArrowOut(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-const monoLabel =
-  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+const mono =
+  "font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground";
 
 const connectLinks = [
   { label: "GitHub", href: "https://github.com/stylessh" },
@@ -80,46 +80,13 @@ const connectLinks = [
   { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-/** Static, layered preview of the deck images — a quiet nod to the
- * original site's hover-deck without any motion. */
-function DeckPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
-  const cards = images.slice(0, 3);
-  const offsets = [
-    "rotate-[-6deg] -translate-x-3 translate-y-1.5",
-    "rotate-[2deg] translate-y-0",
-    "rotate-[7deg] translate-x-3 translate-y-2",
-  ];
-
+/** Inline dot-leader — fills the gap between a left and right element. */
+function Leader() {
   return (
-    <div className="relative h-16 w-[88px] shrink-0" aria-hidden>
-      {cards.map((src, i) => (
-        <span
-          key={src}
-          className={cn(
-            "absolute inset-0 m-auto block size-14 overflow-hidden rounded-[5px] border border-border bg-muted/40 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
-            offsets[i],
-          )}
-          style={{ zIndex: i + 1 }}
-        >
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="56px"
-            className="object-cover"
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
-        </span>
-      ))}
-      <span className="sr-only">Preview deck for {title}</span>
-    </div>
+    <span
+      aria-hidden
+      className="mx-2 hidden flex-1 self-end border-border border-b border-dotted pb-1 sm:block"
+    />
   );
 }
 
@@ -130,33 +97,40 @@ export default function OpusVariantPage() {
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-2xl px-6 py-14 pb-28 sm:px-8 sm:py-20">
-        {/* Path bar */}
-        <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>~ / opus</span>
-          <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
-            <span aria-hidden className="size-1 rounded-full bg-accent" />
-            <span>
-              <span className="hidden sm:inline">Latest Modified · </span>
-              {modified ? (
-                <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
-              ) : (
-                modifiedLabel
-              )}
-            </span>
+      <div className="mx-auto w-full max-w-2xl px-6 py-12 pb-28 sm:px-8 sm:py-16">
+        {/* Top meta strip */}
+        <div className="flex items-center justify-between gap-4 pb-12">
+          <span className={mono}>opus · 02</span>
+          <span
+            className={cn(mono, "inline-flex items-center gap-2 tabular-nums")}
+          >
+            <span
+              aria-hidden
+              className="inline-block size-1 rounded-full bg-accent"
+            />
+            <span className="hidden sm:inline">Latest Modified</span>
+            {modified ? (
+              <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
+            ) : (
+              <span>{modifiedLabel}</span>
+            )}
           </span>
         </div>
 
-        {/* Hero */}
-        <header className="space-y-5 border-t border-border pt-8">
-          <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[22px] font-medium tracking-[-0.025em] leading-[1.1] text-foreground">
-            {hero.name}
-          </h1>
-          <p className="max-w-md text-[13px] leading-relaxed text-foreground">
+        {/* Hero — name leads, role floats right */}
+        <header className="border-border border-t pt-6">
+          <div className="flex items-baseline justify-between gap-4">
+            <h1 className="text-[20px] font-medium tracking-[-0.02em] leading-[1.1]">
+              {hero.name}
+            </h1>
+            <span className={mono}>{hero.role}</span>
+          </div>
+
+          <p className="mt-5 max-w-md text-[13px] leading-relaxed">
             {hero.intro}
           </p>
-          <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
+
+          <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
             <span>{hero.employmentPrefix}</span>
             {hero.showSupabaseMark ? (
               <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
@@ -171,83 +145,94 @@ export default function OpusVariantPage() {
           </p>
         </header>
 
-        {/* Section: Work */}
-        <section className="mt-12" aria-labelledby="opus-work">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-2">
-            <h2 id="opus-work" className={monoLabel}>
-              [ Work ]
+        {/* Projects — catalog with full-width filmstrip per row */}
+        <section className="mt-14" aria-labelledby="opus-index">
+          <div className="flex items-baseline justify-between gap-4 border-border border-t pt-4 pb-6">
+            <h2 id="opus-index" className={mono}>
+              Index
             </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
-              {pad(projects.length)} / {pad(projects.length)}
+            <span className={cn(mono, "tabular-nums")}>
+              {pad(projects.length)} entries
             </span>
           </div>
 
-          <ol className="divide-y divide-border">
+          <ol className="space-y-10">
             {projects.map((project, i) => (
               <li key={project.title}>
-                <article className="grid grid-cols-[1fr_auto] items-start gap-4 py-7 sm:gap-8">
-                  <div className="min-w-0 space-y-2.5">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {pad(i + 1)}
-                      </span>
-                      <h3 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
-
-                    <p className="pl-7 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
+                <article className="space-y-3">
+                  {/* Leader row: index → title …………… host ↗ */}
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
+                      {pad(i + 1)}
+                    </span>
+                    <h3 className="text-[15px] font-medium tracking-[-0.01em]">
+                      <NextLink
+                        href={project.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground transition-colors hover:text-accent"
+                      >
+                        {project.title}
+                      </NextLink>
+                    </h3>
+                    <Leader />
                     <NextLink
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group ml-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                      className="group inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
                     >
                       <span>{hostnameOf(project.href)}</span>
                       <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                     </NextLink>
                   </div>
 
+                  {/* Filmstrip — 3 evenly sized thumbnails */}
                   <NextLink
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="shrink-0 self-start pt-1 transition-opacity hover:opacity-90"
+                    className="group grid grid-cols-3 gap-1.5"
                   >
-                    <DeckPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
+                    {project.deckImages.slice(0, 3).map((src) => (
+                      <span
+                        key={src}
+                        className="relative block aspect-[4/3] overflow-hidden rounded-md border border-border bg-muted/40"
+                      >
+                        <Image
+                          src={src}
+                          alt=""
+                          fill
+                          sizes="(min-width: 640px) 12rem, 30vw"
+                          className="object-cover transition-opacity duration-300 group-hover:opacity-90"
+                          draggable={false}
+                        />
+                      </span>
+                    ))}
                   </NextLink>
+
+                  <p className="max-w-md pl-7 text-[13px] leading-relaxed text-muted-foreground">
+                    {project.description}
+                  </p>
                 </article>
               </li>
             ))}
           </ol>
         </section>
 
-        {/* Section: Connect */}
-        <section className="mt-10" aria-labelledby="opus-connect">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-3">
-            <h2 id="opus-connect" className={monoLabel}>
-              [ Connect ]
+        {/* Connect */}
+        <section className="mt-14" aria-labelledby="opus-connect">
+          <div className="flex items-baseline justify-between gap-4 border-border border-t pt-4 pb-4">
+            <h2 id="opus-connect" className={mono}>
+              Connect
             </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
+            <span className={cn(mono, "tabular-nums")}>
               {pad(connectLinks.length)} ch
             </span>
           </div>
 
-          <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
+          <ul className="flex flex-wrap items-center">
             {connectLinks.map((link, i) => (
               <li key={link.label} className="flex items-center">
                 {i > 0 ? (
@@ -279,9 +264,9 @@ export default function OpusVariantPage() {
         </section>
 
         {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
-          <span className={monoLabel}>stylessh.dev / opus</span>
-          <span className={monoLabel}>
+        <div className="mt-14 flex items-baseline justify-between gap-4 border-border border-t pt-3">
+          <span className={mono}>stylessh.dev / opus</span>
+          <span className={mono}>
             {modified ? (
               <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
             ) : (
