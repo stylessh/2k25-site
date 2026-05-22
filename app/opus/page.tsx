@@ -80,83 +80,30 @@ const connectLinks = [
   { label: "Mail", href: "mailto:adaaanniek@gmail.com" },
 ] as const;
 
-/** Static, layered preview of the deck images — a quiet nod to the
- * original site's hover-deck without any motion. */
-function DeckPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
-  const cards = images.slice(0, 3);
-  const offsets = [
-    "rotate-[-6deg] -translate-x-3 translate-y-1.5",
-    "rotate-[2deg] translate-y-0",
-    "rotate-[7deg] translate-x-3 translate-y-2",
-  ];
-
-  return (
-    <div className="relative h-16 w-[88px] shrink-0" aria-hidden>
-      {cards.map((src, i) => (
-        <span
-          key={src}
-          className={cn(
-            "absolute inset-0 m-auto block size-14 overflow-hidden rounded-[5px] border border-border bg-muted/40 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-[0_1px_2px_rgba(0,0,0,0.5)]",
-            offsets[i],
-          )}
-          style={{ zIndex: i + 1 }}
-        >
-          <Image
-            src={src}
-            alt=""
-            fill
-            sizes="56px"
-            className="object-cover"
-            draggable={false}
-          />
-          <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.03]" />
-        </span>
-      ))}
-      <span className="sr-only">Preview deck for {title}</span>
-    </div>
-  );
-}
-
 export default function OpusVariantPage() {
   const { hero, projects } = CANONICAL_PORTFOLIO;
   const modified = getLatestCommitDate();
   const modifiedLabel = modified ? dateFmt.format(modified) : "Unavailable";
+  const year = new Date().getUTCFullYear();
 
   return (
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-2xl px-6 py-14 pb-28 sm:px-8 sm:py-20">
-        {/* Path bar */}
-        <div className="flex items-center justify-between gap-4 pb-10">
-          <span className={monoLabel}>~ / opus</span>
-          <span className={cn(monoLabel, "inline-flex items-center gap-2")}>
-            <span aria-hidden className="size-1 rounded-full bg-accent" />
-            <span>
-              <span className="hidden sm:inline">Latest Modified · </span>
-              {modified ? (
-                <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
-              ) : (
-                modifiedLabel
-              )}
-            </span>
-          </span>
-        </div>
-
-        {/* Hero */}
-        <header className="space-y-5 border-t border-border pt-8">
-          <p className={monoLabel}>{hero.role}</p>
-          <h1 className="text-[22px] font-medium tracking-[-0.025em] leading-[1.1] text-foreground">
+      <div className="mx-auto w-full max-w-4xl px-6 pt-14 pb-28 sm:px-10 sm:pt-20">
+        {/* Editorial masthead */}
+        <header className="text-center">
+          <p className={monoLabel}>Index · {year}</p>
+          <h1 className="mt-3 font-medium text-[26px] leading-[1.05] tracking-[-0.03em] sm:text-[34px]">
             {hero.name}
           </h1>
-          <p className="max-w-md text-[13px] leading-relaxed text-foreground">
+          <p className="mt-1.5 text-[13px] text-muted-foreground">
+            {hero.role}
+          </p>
+
+          <p className="mx-auto mt-5 max-w-md text-[13px] leading-relaxed text-foreground">
             {hero.intro}
           </p>
-          <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
+
+          <p className="mt-4 inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-[12px] text-muted-foreground">
             <span>{hero.employmentPrefix}</span>
             {hero.showSupabaseMark ? (
               <span className="inline-flex size-[1lh] items-center rounded-md border border-border bg-muted/40 p-0.5">
@@ -171,83 +118,138 @@ export default function OpusVariantPage() {
           </p>
         </header>
 
-        {/* Section: Work */}
-        <section className="mt-12" aria-labelledby="opus-work">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-2">
-            <h2 id="opus-work" className={monoLabel}>
-              [ Work ]
-            </h2>
-            <span className={cn(monoLabel, "tabular-nums")}>
+        {/* Metadata strip */}
+        <dl className="mt-10 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-border bg-border text-[12px]">
+          <div className="bg-background px-3 py-2.5">
+            <dt className={monoLabel}>Latest Modified</dt>
+            <dd className="mt-1 tabular-nums">
+              {modified ? (
+                <time dateTime={modified.toISOString()}>{modifiedLabel}</time>
+              ) : (
+                modifiedLabel
+              )}
+            </dd>
+          </div>
+          <div className="bg-background px-3 py-2.5">
+            <dt className={monoLabel}>Entries</dt>
+            <dd className="mt-1 tabular-nums">
               {pad(projects.length)} / {pad(projects.length)}
-            </span>
+            </dd>
+          </div>
+          <div className="bg-background px-3 py-2.5">
+            <dt className={monoLabel}>Theme</dt>
+            <dd className="mt-1">Auto</dd>
+          </div>
+        </dl>
+
+        {/* Contact sheet — project grid */}
+        <section className="mt-12" aria-labelledby="opus-portfolios">
+          <div className="flex items-baseline justify-between gap-4 pb-3">
+            <h2 id="opus-portfolios" className={monoLabel}>
+              Portfolios
+            </h2>
+            <span className={cn(monoLabel, "tabular-nums")}>Sheet 01</span>
           </div>
 
-          <ol className="divide-y divide-border">
-            {projects.map((project, i) => (
-              <li key={project.title}>
-                <article className="grid grid-cols-[1fr_auto] items-start gap-4 py-7 sm:gap-8">
-                  <div className="min-w-0 space-y-2.5">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                        {pad(i + 1)}
-                      </span>
-                      <h3 className="text-[15px] font-medium tracking-[-0.01em] truncate">
-                        <NextLink
-                          href={project.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-foreground underline decoration-border/70 underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
-                        >
-                          {project.title}
-                        </NextLink>
-                      </h3>
-                    </div>
+          <ul className="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border sm:grid-cols-2">
+            {projects.map((project, i) => {
+              const [cover, ...rest] = project.deckImages;
 
-                    <p className="pl-7 max-w-md text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
+              return (
+                <li key={project.title} className="bg-background">
+                  <article className="flex h-full flex-col">
                     <NextLink
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group ml-7 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                      aria-label={`Open ${project.title}`}
+                      className="group relative block aspect-[4/3] w-full overflow-hidden border-b border-border bg-muted/30"
                     >
-                      <span>{hostnameOf(project.href)}</span>
-                      <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      <Image
+                        src={cover}
+                        alt=""
+                        fill
+                        sizes="(min-width: 640px) 50vw, 100vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                        draggable={false}
+                      />
+                      <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.04]" />
+                      <span className="pointer-events-none absolute left-2.5 top-2.5 inline-flex items-center rounded-sm border border-border/80 bg-background/85 px-1.5 py-0.5 font-mono text-[9px] tracking-[0.14em] text-muted-foreground uppercase backdrop-blur-sm tabular-nums">
+                        {pad(i + 1)} · {project.title}
+                      </span>
                     </NextLink>
-                  </div>
 
-                  <NextLink
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Open ${project.title}`}
-                    className="shrink-0 self-start pt-1 transition-opacity hover:opacity-90"
-                  >
-                    <DeckPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
-                  </NextLink>
-                </article>
-              </li>
-            ))}
-          </ol>
+                    <div className="flex flex-1 flex-col gap-3 p-4">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <h3 className="text-[14px] font-medium tracking-[-0.01em]">
+                          <NextLink
+                            href={project.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-foreground transition-colors hover:text-accent"
+                          >
+                            {project.title}
+                          </NextLink>
+                        </h3>
+                        <NextLink
+                          href={project.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group inline-flex shrink-0 items-center gap-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          <span>{hostnameOf(project.href)}</span>
+                          <IconArrowOut className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        </NextLink>
+                      </div>
+
+                      <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+                        {project.description}
+                      </p>
+
+                      {rest.length > 0 ? (
+                        <div className="mt-auto flex items-center gap-2 pt-2">
+                          <span className={monoLabel}>Plates</span>
+                          <ul className="flex items-center gap-1.5">
+                            {rest.map((src, idx) => (
+                              <li
+                                key={src}
+                                className="relative size-7 overflow-hidden rounded-[3px] border border-border bg-muted/40"
+                              >
+                                <Image
+                                  src={src}
+                                  alt=""
+                                  fill
+                                  sizes="28px"
+                                  className="object-cover"
+                                  draggable={false}
+                                />
+                                <span className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-foreground/[0.04]" />
+                                <span className="sr-only">Plate {idx + 2}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ul>
         </section>
 
-        {/* Section: Connect */}
-        <section className="mt-10" aria-labelledby="opus-connect">
-          <div className="flex items-center justify-between gap-4 border-t border-border pt-4 pb-3">
+        {/* Connect */}
+        <section className="mt-12" aria-labelledby="opus-connect">
+          <div className="flex items-baseline justify-between gap-4 pb-3">
             <h2 id="opus-connect" className={monoLabel}>
-              [ Connect ]
+              Connect
             </h2>
             <span className={cn(monoLabel, "tabular-nums")}>
               {pad(connectLinks.length)} ch
             </span>
           </div>
 
-          <ul className="flex flex-wrap items-center gap-x-1 gap-y-2">
+          <ul className="flex flex-wrap items-center gap-x-1 gap-y-2 border-t border-border pt-3">
             {connectLinks.map((link, i) => (
               <li key={link.label} className="flex items-center">
                 {i > 0 ? (
@@ -278,8 +280,8 @@ export default function OpusVariantPage() {
           </ul>
         </section>
 
-        {/* Footer */}
-        <div className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
+        {/* Colophon */}
+        <footer className="mt-12 flex items-baseline justify-between gap-4 border-t border-border pt-3">
           <span className={monoLabel}>stylessh.dev / opus</span>
           <span className={monoLabel}>
             {modified ? (
@@ -288,7 +290,7 @@ export default function OpusVariantPage() {
               modifiedLabel
             )}
           </span>
-        </div>
+        </footer>
       </div>
 
       <ModelVariantToolbar />
