@@ -32,9 +32,9 @@ function getLatestCommitDate(): Date | null {
 
 const content = CANONICAL_PORTFOLIO;
 const labelClass =
-  "font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground";
+  "font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground";
 const linkClass =
-  "underline decoration-border/70 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground";
+  "underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   month: "short",
@@ -65,6 +65,59 @@ function pad(value: number) {
   return value.toString().padStart(2, "0");
 }
 
+function DeckPreview({
+  images,
+  title,
+}: {
+  images: readonly string[];
+  title: string;
+}) {
+  return (
+    <div
+      className="grid grid-cols-3 gap-1.5"
+      aria-label={`${title} visual preview`}
+    >
+      {images.map((image, imageIndex) => (
+        <span
+          key={image}
+          className="relative block aspect-[4/5] overflow-hidden rounded-[6px] border border-border bg-muted/40"
+        >
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(min-width: 768px) 6rem, 28vw"
+            className="object-cover opacity-90 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+            draggable={false}
+          />
+          <span className="absolute right-1.5 bottom-1.5 rounded-[3px] border border-border bg-background/85 px-1 font-mono text-[9px] text-muted-foreground tabular-nums backdrop-blur-sm">
+            {pad(imageIndex + 1)}
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function ArrowUpRight() {
+  return (
+    <svg
+      role="presentation"
+      viewBox="0 0 12 12"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-3"
+      aria-hidden="true"
+    >
+      <path d="M3.25 8.75 8.75 3.25" />
+      <path d="M4.25 3.25h4.5v4.5" />
+    </svg>
+  );
+}
+
 export default function GptVariantPage() {
   const latestModified = getLatestCommitDate();
   const latestModifiedText = latestModified
@@ -74,28 +127,30 @@ export default function GptVariantPage() {
 
   return (
     <main className="min-h-dvh bg-background pb-28 text-foreground selection:bg-accent selection:text-accent-foreground">
-      <div className="mx-auto w-full max-w-3xl px-6 py-12 sm:px-8 sm:py-16">
-        <nav className="mb-12 flex items-center justify-between gap-4">
+      <div className="mx-auto w-full max-w-4xl px-5 py-10 sm:px-8 sm:py-16">
+        <nav className="mb-10 flex items-center justify-between gap-4">
+          <span className={labelClass}>/ gpt / portfolios</span>
           <NextLink
             href="/"
-            className={`${linkClass} text-[13px] text-muted-foreground`}
+            className={`${linkClass} text-[12px] text-muted-foreground`}
           >
             Original
           </NextLink>
-          <span className={labelClass}>GPT portfolio</span>
         </nav>
 
-        <header className="grid gap-8 border-border border-t pt-6 sm:grid-cols-[1fr_15rem]">
-          <div className="space-y-6">
-            <div className="space-y-1.5">
+        <header className="grid gap-8 border-border border-y py-8 md:grid-cols-[minmax(0,1fr)_18rem] md:py-10">
+          <div className="max-w-xl space-y-6">
+            <div className="space-y-2">
               <p className={labelClass}>{hero.role}</p>
-              <h1 className="font-medium text-[24px] leading-tight tracking-[-0.03em] sm:text-[30px]">
+              <h1 className="font-medium text-[26px] leading-none tracking-[-0.04em] sm:text-[34px]">
                 {hero.name}
               </h1>
             </div>
 
-            <div className="max-w-md space-y-4">
-              <p className="text-[14px] leading-relaxed">{hero.intro}</p>
+            <div className="space-y-4">
+              <p className="text-[14px] leading-relaxed text-foreground sm:text-[15px]">
+                {hero.intro}
+              </p>
               <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
                 <span>{hero.employmentPrefix}</span>
                 {hero.showSupabaseMark ? (
@@ -110,10 +165,10 @@ export default function GptVariantPage() {
             </div>
           </div>
 
-          <dl className="grid content-start gap-3 border-border border-t pt-5 text-[13px] sm:border-t-0 sm:border-l sm:pl-6 sm:pt-0">
+          <dl className="grid content-start gap-4 border-border border-t pt-5 text-[13px] md:border-t-0 md:border-l md:pt-0 md:pl-6">
             <div className="grid gap-1">
               <dt className={labelClass}>Latest Modified</dt>
-              <dd className="tabular-nums">
+              <dd className="tabular-nums text-foreground">
                 {latestModified ? (
                   <time dateTime={latestModified.toISOString()}>
                     {latestModifiedText}
@@ -125,58 +180,68 @@ export default function GptVariantPage() {
             </div>
             <div className="grid gap-1">
               <dt className={labelClass}>Entries</dt>
-              <dd className="tabular-nums">{pad(projects.length)}</dd>
+              <dd className="tabular-nums text-foreground">
+                {pad(projects.length)}
+              </dd>
             </div>
             <div className="grid gap-1">
-              <dt className={labelClass}>Theme</dt>
-              <dd>System</dd>
+              <dt className={labelClass}>Mode</dt>
+              <dd className="text-foreground">System theme</dd>
             </div>
           </dl>
         </header>
 
-        <section className="mt-14" aria-labelledby="gpt-projects">
-          <div className="mb-5 flex items-baseline justify-between gap-4 border-border border-t pt-5">
+        <section className="mt-12" aria-labelledby="gpt-projects">
+          <div className="mb-2 flex items-baseline justify-between gap-4">
             <h2 id="gpt-projects" className={labelClass}>
-              Portfolio entries
+              Portfolio index
             </h2>
-            <p className="font-mono text-[10px] text-muted-foreground">
-              shared data
+            <p className="font-mono text-[10px] text-muted-foreground tabular-nums">
+              {pad(projects.length)} records
             </p>
           </div>
 
-          <ol className="divide-y divide-border border-border border-y">
+          <ol>
             {projects.map((project, projectIndex) => (
-              <li key={project.title}>
-                <article className="grid gap-6 py-7 sm:grid-cols-[1fr_16rem] sm:items-start">
-                  <div className="space-y-3">
-                    <div className="flex items-baseline gap-3">
-                      <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+              <li key={project.title} className="border-border border-t">
+                <article className="grid gap-5 py-7 md:grid-cols-[minmax(0,1fr)_19rem] md:items-start md:py-8">
+                  <div className="grid gap-4 md:grid-cols-[4.25rem_minmax(0,1fr)]">
+                    <div className="flex items-baseline justify-between gap-4 md:block">
+                      <span className="font-mono text-[12px] text-muted-foreground tabular-nums">
                         {pad(projectIndex + 1)}
                       </span>
-                      <h3 className="font-medium text-[17px] tracking-[-0.02em]">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground md:mt-2 md:block">
+                        Entry
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <h3 className="font-medium text-[17px] tracking-[-0.025em]">
+                          <NextLink
+                            href={project.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="transition-colors hover:text-accent"
+                          >
+                            {project.title}
+                          </NextLink>
+                        </h3>
                         <NextLink
                           href={project.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="transition-colors hover:text-accent"
+                          className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-foreground"
                         >
-                          {project.title}
+                          <span>{hostName(project.href)}</span>
+                          <ArrowUpRight />
                         </NextLink>
-                      </h3>
+                      </div>
+
+                      <p className="max-w-lg text-[13px] leading-relaxed text-muted-foreground">
+                        {project.description}
+                      </p>
                     </div>
-
-                    <p className="max-w-lg text-[13px] leading-relaxed text-muted-foreground">
-                      {project.description}
-                    </p>
-
-                    <NextLink
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`${linkClass} inline-flex font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground`}
-                    >
-                      {hostName(project.href)}
-                    </NextLink>
                   </div>
 
                   <NextLink
@@ -184,26 +249,12 @@ export default function GptVariantPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.title}`}
-                    className="group grid grid-cols-3 gap-1.5"
+                    className="group block"
                   >
-                    {project.deckImages.map((image, imageIndex) => (
-                      <span
-                        key={image}
-                        className="relative block aspect-[3/4] overflow-hidden rounded-md border border-border bg-muted/40"
-                      >
-                        <Image
-                          src={image}
-                          alt=""
-                          fill
-                          sizes="(min-width: 640px) 5rem, 30vw"
-                          className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100"
-                          draggable={false}
-                        />
-                        <span className="absolute bottom-1.5 left-1.5 rounded-sm border border-border/80 bg-background/85 px-1 py-0.5 font-mono text-[9px] text-muted-foreground backdrop-blur-sm">
-                          {pad(imageIndex + 1)}
-                        </span>
-                      </span>
-                    ))}
+                    <DeckPreview
+                      images={project.deckImages}
+                      title={project.title}
+                    />
                   </NextLink>
                 </article>
               </li>
@@ -212,14 +263,14 @@ export default function GptVariantPage() {
         </section>
 
         <section
-          className="mt-10 border-border border-t pt-5"
+          className="mt-10 border-border border-y py-5"
           aria-labelledby="gpt-connect"
         >
           <div className="mb-4 flex items-baseline justify-between gap-4">
             <h2 id="gpt-connect" className={labelClass}>
               Connect
             </h2>
-            <span className="font-mono text-[10px] text-muted-foreground">
+            <span className="font-mono text-[10px] text-muted-foreground tabular-nums">
               {pad(connectLinks.length)} links
             </span>
           </div>
@@ -243,6 +294,20 @@ export default function GptVariantPage() {
             ))}
           </ul>
         </section>
+
+        <footer className="mt-8 flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
+          <span className={labelClass}>stylessh.dev/gpt</span>
+          <span className="tabular-nums">
+            Latest Modified:{" "}
+            {latestModified ? (
+              <time dateTime={latestModified.toISOString()}>
+                {latestModifiedText}
+              </time>
+            ) : (
+              latestModifiedText
+            )}
+          </span>
+        </footer>
       </div>
 
       <ModelVariantToolbar />
