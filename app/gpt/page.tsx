@@ -85,18 +85,9 @@ function pad(value: number) {
   return value.toString().padStart(2, "0");
 }
 
-function ProjectPreview({
-  images,
-  title,
-}: {
-  images: readonly string[];
-  title: string;
-}) {
+function ProjectPreview({ images }: { images: readonly string[] }) {
   return (
-    <div
-      className="grid grid-cols-3 gap-1.5 sm:w-[168px]"
-      aria-label={`${title} visual preview`}
-    >
+    <div className="grid grid-cols-3 gap-1.5 sm:w-[168px]">
       {images.slice(0, 3).map((image, index) => (
         <span
           key={image}
@@ -230,10 +221,7 @@ export default function GptVariantPage() {
                       </p>
                     </article>
 
-                    <ProjectPreview
-                      images={project.deckImages}
-                      title={project.title}
-                    />
+                    <ProjectPreview images={project.deckImages} />
                   </NextLink>
                 </li>
               ))}
