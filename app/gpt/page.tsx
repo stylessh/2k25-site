@@ -108,10 +108,7 @@ export default function GptVariantPage() {
     <main className="min-h-dvh bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
       <div className="mx-auto grid w-full max-w-4xl gap-12 px-6 py-12 pb-28 sm:px-8 sm:py-16 md:grid-cols-[10rem_1fr] md:gap-16">
         <aside className="space-y-8 md:sticky md:top-16 md:self-start">
-          <NextLink
-            href="/"
-            className={`${quietLink} text-[12px]`}
-          >
+          <NextLink href="/" className={`${quietLink} text-[12px]`}>
             Original page
           </NextLink>
 
@@ -238,7 +235,7 @@ export default function GptVariantPage() {
             </ol>
           </section>
 
-          <footer
+          <section
             className="mt-12 border-border border-t pt-4"
             aria-labelledby="gpt-connect"
           >
@@ -256,9 +253,7 @@ export default function GptVariantPage() {
                 <li key={link.label}>
                   <NextLink
                     href={link.href}
-                    target={
-                      link.href.startsWith("http") ? "_blank" : undefined
-                    }
+                    target={link.href.startsWith("http") ? "_blank" : undefined}
                     rel={
                       link.href.startsWith("http")
                         ? "noopener noreferrer"
@@ -271,7 +266,7 @@ export default function GptVariantPage() {
                 </li>
               ))}
             </ul>
-          </footer>
+          </section>
         </div>
       </div>
 
