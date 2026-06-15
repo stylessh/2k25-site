@@ -1,4 +1,4 @@
-import { SupabaseMark } from "@/components/supabase-mark";
+import { TemboMark } from "@/components/tembo-mark";
 import type { PortfolioHero as PortfolioHeroContent } from "@/lib/portfolio-content";
 
 export function Hero({ hero }: { hero: PortfolioHeroContent }) {
@@ -13,10 +13,10 @@ export function Hero({ hero }: { hero: PortfolioHeroContent }) {
         <p className="text-normal text-foreground">{hero.intro}</p>
         <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-normal text-muted-foreground">
           <span>{hero.employmentPrefix}</span>
-          {hero.showSupabaseMark ? (
-            <span className="inline-flex items-center rounded-md border border-border bg-muted/40 size-[1lh] p-0.5">
+          {hero.showOrgMark ? (
+            <span className="inline-flex items-center rounded-md border border-border bg-muted/40 size-[1lh] p-0.5 text-foreground">
               <span className="inline-flex shrink-0 w-full h-full items-center justify-center">
-                <SupabaseMark className="h-full w-full" />
+                <TemboMark className="h-full w-full" />
               </span>
             </span>
           ) : null}

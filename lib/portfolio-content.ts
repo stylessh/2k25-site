@@ -4,7 +4,7 @@ export type PortfolioHero = {
   intro: string;
   employmentPrefix: string;
   orgName: string;
-  showSupabaseMark: boolean;
+  showOrgMark: boolean;
 };
 
 export type PortfolioProject = {
@@ -27,8 +27,8 @@ export const CANONICAL_PORTFOLIO: PortfolioContent = {
     intro:
       "Designing and Engineering fresh, functional, accessible and great-looking user interfaces and experiences.",
     employmentPrefix: "Currently working at",
-    orgName: "Supabase",
-    showSupabaseMark: true,
+    orgName: "Tembo",
+    showOrgMark: true,
   },
   projects: [
     {
