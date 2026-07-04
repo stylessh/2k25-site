@@ -2,9 +2,6 @@ export type PortfolioHero = {
   name: string;
   role: string;
   intro: string;
-  employmentPrefix: string;
-  orgName: string;
-  showOrgMark: boolean;
 };
 
 export type PortfolioProject = {
@@ -26,9 +23,6 @@ export const CANONICAL_PORTFOLIO: PortfolioContent = {
     role: "Design Engineer",
     intro:
       "Designing and Engineering fresh, functional, accessible and great-looking user interfaces and experiences.",
-    employmentPrefix: "Currently working at",
-    orgName: "Tembo",
-    showOrgMark: true,
   },
   projects: [
     {
