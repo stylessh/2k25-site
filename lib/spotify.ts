@@ -103,6 +103,15 @@ export async function getNowPlaying(): Promise<NowPlaying | null> {
   };
 }
 
+export function getSpotifyRedirectUri(request: Request): string {
+  const configured = process.env.SPOTIFY_REDIRECT_URI?.trim();
+  if (configured) {
+    return configured;
+  }
+
+  return new URL("/api/spotify/callback", request.url).toString();
+}
+
 export function getSpotifyAuthUrl(redirectUri: string): string | null {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   if (!clientId) {

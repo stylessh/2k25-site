@@ -1,7 +1,7 @@
-import { getSpotifyAuthUrl } from "@/lib/spotify";
+import { getSpotifyAuthUrl, getSpotifyRedirectUri } from "@/lib/spotify";
 
 export async function GET(request: Request) {
-  const redirectUri = new URL("/api/spotify/callback", request.url).toString();
+  const redirectUri = getSpotifyRedirectUri(request);
   const authUrl = getSpotifyAuthUrl(redirectUri);
 
   if (!authUrl) {

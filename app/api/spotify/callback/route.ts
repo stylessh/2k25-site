@@ -1,4 +1,4 @@
-import { exchangeCodeForTokens } from "@/lib/spotify";
+import { exchangeCodeForTokens, getSpotifyRedirectUri } from "@/lib/spotify";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     return new Response("Missing authorization code.", { status: 400 });
   }
 
-  const redirectUri = new URL("/api/spotify/callback", request.url).toString();
+  const redirectUri = getSpotifyRedirectUri(request);
   const tokens = await exchangeCodeForTokens(code, redirectUri);
 
   if (!tokens) {
