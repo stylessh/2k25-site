@@ -59,4 +59,26 @@
   .text-label {
     @apply text-[12px] font-normal uppercase tracking-[0.1em] text-muted-foreground;
   }
+
+  .spotify-playing-appear {
+    animation: spotify-playing-appear 420ms ease-out forwards;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spotify-playing-appear {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes spotify-playing-appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
