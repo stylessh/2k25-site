@@ -1,8 +1,8 @@
 "use client";
 
 import { useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
 import type { SVGProps } from "react";
+import { useEffect, useState } from "react";
 import type { NowPlaying } from "@/lib/spotify";
 
 const POLL_INTERVAL_MS = 30_000;
@@ -40,14 +40,17 @@ function getBandEnergy(bandIndex: number, phase: number): number {
   }
 
   const slowPulse = Math.sin(phase * 0.34 + band.emphasisPhase) * 0.5 + 0.5;
-  const midPulse = Math.sin(phase * 0.72 + band.emphasisPhase * 0.8) * 0.5 + 0.5;
-  const accentPulse = Math.sin(phase * 1.35 + band.emphasisPhase * 1.2) * 0.5 + 0.5;
+  const midPulse =
+    Math.sin(phase * 0.72 + band.emphasisPhase * 0.8) * 0.5 + 0.5;
+  const accentPulse =
+    Math.sin(phase * 1.35 + band.emphasisPhase * 1.2) * 0.5 + 0.5;
 
   return 0.34 + slowPulse * 0.34 + midPulse * 0.2 + accentPulse * 0.12;
 }
 
 function getFocusBoost(column: number, phase: number): number {
-  const focusCenter = ((Math.sin(phase * 0.22 + 0.8) + 1) / 2) * (WAVE_BAR_COUNT - 1);
+  const focusCenter =
+    ((Math.sin(phase * 0.22 + 0.8) + 1) / 2) * (WAVE_BAR_COUNT - 1);
   const focusWidth = 2.2 + Math.sin(phase * 0.17) * 0.8;
   const distance = column - focusCenter;
 
@@ -74,8 +77,7 @@ function getBarHeight(column: number, phase: number): number {
   const edgeDecay = getEdgeDecay(column);
   const barRipple =
     0.9 + 0.1 * Math.sin(phase * 2.8 + column * 0.95 + positionInBand * 0.4);
-  const kick =
-    bandIndex === 0 && Math.sin(phase * 1.75 + 0.3) > 0.9 ? 1.12 : 1;
+  const kick = bandIndex === 0 && Math.sin(phase * 1.75 + 0.3) > 0.9 ? 1.12 : 1;
 
   const amplitude =
     (0.42 + bandEnergy * 0.46 + focusBoost * 0.28) *
@@ -146,6 +148,7 @@ function SpotifyWaveBars() {
   });
 
   return (
+    // biome-ignore lint/a11y/noSvgWithoutTitle: decorative waveform; aria-hidden
     <svg
       aria-hidden
       width={WAVE_WIDTH_PX}
