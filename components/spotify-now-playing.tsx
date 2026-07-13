@@ -215,7 +215,7 @@ export function SpotifyNowPlaying() {
   }
 
   return (
-    <div className="spotify-playing-appear pointer-events-none fixed inset-x-0 bottom-0 z-50 flex flex-col items-center">
+    <div className="spotify-playing-appear pointer-events-none flex flex-col items-center">
       <div className="mb-6 flex justify-center px-4">
         <a
           href={track.url}
