@@ -4,11 +4,16 @@ export type PortfolioHero = {
   intro: string;
 };
 
+export type PortfolioMedia = {
+  type: "image" | "video";
+  src: string;
+  poster?: string;
+};
+
 export type PortfolioProject = {
   title: string;
   href: string;
-  description: string;
-  deckImages: readonly string[];
+  media: readonly PortfolioMedia[];
 };
 
 export type PortfolioContent = {
@@ -26,35 +31,41 @@ export const CANONICAL_PORTFOLIO: PortfolioContent = {
   },
   projects: [
     {
-      title: "DiffKit",
-      href: "https://diff-kit.com",
-      description:
-        "A fast, design-first GitHub dashboard for developers who want to stay on top of their pull requests, issues, and code reviews — without the noise.",
-      deckImages: [
-        "/projects/diffkit/1.png",
-        "/projects/diffkit/2.png",
-        "/projects/diffkit/3.png",
+      title: "Trylle",
+      href: "https://trylle.com",
+      media: [
+        { type: "video", src: "/projects/trylle/1.mp4" },
+        { type: "video", src: "/projects/trylle/2.mp4" },
+        { type: "video", src: "/projects/trylle/3.mp4" },
+        { type: "image", src: "/projects/trylle/4.png" },
+        { type: "image", src: "/projects/trylle/5.png" },
+      ],
+    },
+    {
+      title: "Supabase",
+      href: "https://supabase.com",
+      media: [
+        { type: "video", src: "/projects/supabase/sp.mp4" },
+        { type: "image", src: "/projects/supabase/2.png" },
+        { type: "image", src: "/projects/supabase/3.png" },
+        { type: "image", src: "/projects/supabase/4.png" },
+      ],
+    },
+    {
+      title: "Tembo",
+      href: "https://tembo.io",
+      media: [
+        { type: "video", src: "/projects/tembo/1.mp4" },
+        { type: "video", src: "/projects/tembo/2.mp4" },
       ],
     },
     {
       title: "Peel",
       href: "https://peel.studio",
-      description: "Extract design tokens from any website, image or video.",
-      deckImages: [
-        "/projects/peel/1.png",
-        "/projects/peel/2.png",
-        "/projects/peel/3.png",
-      ],
-    },
-    {
-      title: "Interactions",
-      href: "https://interactions-matter.vercel.app/",
-      description:
-        "Delightful User Interfaces and interactions, and how to create them.",
-      deckImages: [
-        "/projects/interactions/1.png",
-        "/projects/interactions/2.png",
-        "/projects/interactions/3.png",
+      media: [
+        { type: "image", src: "/projects/peel/1.png" },
+        { type: "image", src: "/projects/peel/2.png" },
+        { type: "image", src: "/projects/peel/3.png" },
       ],
     },
   ],

@@ -47,6 +47,17 @@
   --font-sans: var(--font-inter), system-ui, sans-serif;
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
 @layer utilities {
   .text-normal {
     @apply text-[14px] leading-relaxed;
