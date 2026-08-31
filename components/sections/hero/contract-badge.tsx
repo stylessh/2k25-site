@@ -3,8 +3,7 @@
 import { track } from "@vercel/analytics";
 import NextLink from "next/link";
 
-const X_DM_URL =
-  "https://x.com/messages/compose?recipient_id=1106371098210430976";
+const BOOKING_URL = "https://cal.com/alan-daniel/30min";
 
 function referrerHost() {
   try {
@@ -17,13 +16,13 @@ function referrerHost() {
 export function ContractBadge() {
   return (
     <NextLink
-      href={X_DM_URL}
+      href={BOOKING_URL}
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => {
         track("Contract Work Click", {
           location: "hero",
-          destination: "x_dm",
+          destination: "cal",
           path: window.location.pathname,
           referrer: referrerHost(),
           locale: navigator.language,
