@@ -26,10 +26,6 @@ export function ContractBadge() {
           destination: "x_dm",
           path: window.location.pathname,
           referrer: referrerHost(),
-          theme: document.documentElement.classList.contains("dark")
-            ? "dark"
-            : "light",
-          viewport: `${window.innerWidth}x${window.innerHeight}`,
           locale: navigator.language,
         });
       }}
