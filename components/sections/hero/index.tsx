@@ -1,6 +1,5 @@
 import { Links } from "@/components/sections/links";
 import type { PortfolioHero as PortfolioHeroContent } from "@/lib/portfolio-content";
-import { ContractBadge } from "./contract-badge";
 
 export function Hero({ hero }: { hero: PortfolioHeroContent }) {
   return (
@@ -10,8 +9,6 @@ export function Hero({ hero }: { hero: PortfolioHeroContent }) {
           <h1 className="text-highlight">{hero.name}</h1>
           <p className="text-normal text-muted-foreground">{hero.role}</p>
         </div>
-
-        <ContractBadge />
       </div>
 
       <div className="max-w-md space-y-6">
