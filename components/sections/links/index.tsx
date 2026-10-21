@@ -72,7 +72,7 @@ const connectLinks = [
   },
   {
     label: "X (Twitter)",
-    href: "https://x.com/stylesshDev",
+    href: "https://x.com/stylessh",
     Icon: IconX,
   },
   { label: "Mail", href: "mailto:hey@stylessh.dev", Icon: IconMail },
