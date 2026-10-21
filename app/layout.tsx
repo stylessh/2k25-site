@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: "Alan Daniel — Design Engineer",
     description,
     card: "summary_large_image",
-    creator: "@stylesshDev",
+    creator: "@stylessh",
   },
 
   alternates: {
