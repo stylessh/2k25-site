@@ -66,7 +66,7 @@ const connectLinks = [
     href: "https://x.com/stylessh",
     Icon: IconX,
   },
-  { label: "Mail", href: "mailto:hey@stylessh.dev", Icon: IconMail },
+  { label: "Mail", href: "mailto:adaaanniel@gmail.com", Icon: IconMail },
 ] as const;
 
 export function Links() {
