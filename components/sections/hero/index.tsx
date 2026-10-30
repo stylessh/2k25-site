@@ -1,9 +1,12 @@
+import { AvailabilityBanner } from "@/components/availability-banner";
 import { Links } from "@/components/sections/links";
 import type { PortfolioHero as PortfolioHeroContent } from "@/lib/portfolio-content";
 
 export function Hero({ hero }: { hero: PortfolioHeroContent }) {
   return (
     <header className="space-y-8">
+      <AvailabilityBanner />
+
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-highlight">{hero.name}</h1>

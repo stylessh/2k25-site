@@ -14,6 +14,14 @@
     --border: #e5e5e5;
     --accent: #ffb162;
     --accent-foreground: #171717;
+
+    /* Raised surface, after Linear's pill buttons: a fill a step above the
+       page, a 0.5px hairline ring and a tight two-layer drop. */
+    --raised: #fdfdfd;
+    --raised-hover: #f6f6f6;
+    --raised-ring:
+      rgb(0 0 0 / 0.09) 0 0 0 0.5px, rgb(0 0 0 / 0.02) 0 3px 6px -2px,
+      rgb(0 0 0 / 0.04) 0 1px 1px 0;
   }
 
   .dark {
@@ -25,6 +33,11 @@
     --border: #262626;
     --accent: #ffb162;
     --accent-foreground: #171717;
+
+    --raised: #1a1a1a;
+    --raised-hover: #212121;
+    --raised-ring:
+      rgb(255 255 255 / 0.137) 0 0 0 0.5px, rgb(0 0 0 / 0.3) 0 0.5px 1px 1px;
   }
 
   * {
@@ -43,6 +56,8 @@
   --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-raised: var(--raised);
+  --color-raised-hover: var(--raised-hover);
 
   --font-sans: var(--font-inter), system-ui, sans-serif;
 }
